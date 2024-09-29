@@ -20,10 +20,10 @@ public class Player : MonoBehaviour
     }
 
     private void OnEnable() {
-        move = playerControls.Player.Move;
-        move.Enable();
-        jumpAction = playerControls.Player.Jump;
-        jumpAction.started += Jump;
+        // move = playerControls.Player.Move;
+        // move.Enable();
+        // jumpAction = playerControls.Player.Jump;
+        // jumpAction.started += Jump;
     }
 
     // Start is called before the first frame update
@@ -35,7 +35,12 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        moveDirection.x = move.ReadValue<Vector2>().x;
+
+    }
+
+    public void Move(InputAction.CallbackContext context)
+    {
+        moveDirection.x = context.ReadValue<Vector2>().x;
     }
 
     public void Jump(InputAction.CallbackContext context)
