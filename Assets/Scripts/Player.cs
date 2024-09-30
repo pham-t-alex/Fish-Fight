@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float jump = 0;
     [SerializeField] private int jumpCount = 0;
     [SerializeField] private int maxJumps = 2;
+    [SerializeField] private int health = 100;
     private Rigidbody2D rb;
 
     private void Awake() {
