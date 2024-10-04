@@ -5,9 +5,6 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    private PlayerInputActions playerControls;
-    private InputAction move;
-    private InputAction jumpAction;
     private Vector2 moveDirection = Vector2.zero;
     [SerializeField] private float speed = 0;
     [SerializeField] private float jump = 0;
@@ -16,15 +13,9 @@ public class Player : MonoBehaviour
     [SerializeField] private int health = 100;
     private Rigidbody2D rb;
 
-    private void Awake() {
-        playerControls = new PlayerInputActions();
-    }
+    private void Awake()
+    {
 
-    private void OnEnable() {
-        move = playerControls.Player.Move;
-        move.Enable();
-        jumpAction = playerControls.Player.Jump;
-        jumpAction.started += Jump;
     }
 
     // Start is called before the first frame update
@@ -36,7 +27,12 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        moveDirection.x = move.ReadValue<Vector2>().x;
+        
+    }
+
+    public void Move(InputAction.CallbackContext context)
+    {
+        moveDirection.x = context.ReadValue<Vector2>().x;
     }
 
     public void Jump(InputAction.CallbackContext context)
