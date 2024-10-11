@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int jumpCount = 0;
     [SerializeField] private int maxJumps = 2;
     [SerializeField] private int health = 100;
-    [SerializeField] private int attackCooldown = 2;
+    [SerializeField] private float attackCooldown = 0.25f;
     private float timer = 0.0f;
     private Rigidbody2D rb;
     [SerializeField] private GameObject attackObject;
