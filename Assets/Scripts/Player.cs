@@ -10,8 +10,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float jump = 0;
     [SerializeField] private int jumpCount = 0;
     [SerializeField] private int maxJumps = 2;
-    [SerializeField] private int health = 100;
+    [SerializeField] private double health = 100;
     private Rigidbody2D rb;
+    [SerializeField] private GameObject attackObject;
+    private bool movedRightLast = true; // by default, the player is facign towards the center, which would be right
+    //private bool movedLeftLast = false;
 
     private void Awake()
     {
@@ -33,6 +36,15 @@ public class Player : MonoBehaviour
     public void Move(InputAction.CallbackContext context)
     {
         moveDirection.x = context.ReadValue<Vector2>().x;
+        if (moveDirection.x < 0) {
+            //movedLeftLast = true;
+            movedRightLast = false;
+            Debug.Log("Last moved left");
+        } else if (moveDirection.x > 0) {
+            //movedLeftLast = false;
+            movedRightLast = true;
+            Debug.Log("Last moved right");
+        }
     }
 
     public void Jump(InputAction.CallbackContext context)
@@ -59,6 +71,27 @@ public class Player : MonoBehaviour
                 jumpCount = maxJumps;
                 Debug.Log("Jumps reset");
             }
+        }
+    }
+    public void Attack(InputAction.CallbackContext context) {
+        GameObject attackRange = Instantiate(attackObject);
+        if (movedRightLast) { // moved right last
+            //GameObject attackRange = Instantiate(attackObject);
+            attackRange.transform.position = new Vector2((this.transform.position.x + 1), this.transform.position.y);
+            Debug.Log("Instantiated attack to the right!");
+        } else { // moved left last
+            //GameObject attackRange = Instantiate(attackObject);
+            attackRange.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
+            Debug.Log("Instantiated attack to the left!");
+        }
+        Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
+    }
+    public void Hurt(double damage) {
+        damage /= 3;
+        this.health -= damage;
+        if (health <= 0) {
+            Debug.Log("I died. ;-;");
+            Destroy(this.gameObject);
         }
     }
 }

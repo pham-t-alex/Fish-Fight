@@ -177,6 +177,7 @@ MonoBehaviour:
   jumpCount: 0
   maxJumps: 2
   health: 100
+  attackObject: {fileID: 940650987817617508, guid: a90503956466d43ccbee724a1618a2e2, type: 3}
 --- !u!114 &6666308252848752675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +220,19 @@ MonoBehaviour:
     m_ActionId: 77ac154c-915a-4249-90eb-5312228f7fa0
     m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4201527087307601395}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: Attack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 9b54f486-5a3c-40cc-aa46-9ddb837419a4
     m_ActionName: Player/Fire[/Mouse/leftButton]
   - m_PersistentCalls:
