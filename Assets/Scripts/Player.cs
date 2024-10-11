@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     [SerializeField] private int jumpCount = 0;
     [SerializeField] private int maxJumps = 2;
     [SerializeField] private int health = 100;
+    [SerializeField] private int attackCooldown = 2;
+    private float timer = 0.0f;
     private Rigidbody2D rb;
     [SerializeField] private GameObject attackObject;
     private bool movedRightLast = true; // by default, the player is facign towards the center, which would be right
@@ -35,7 +37,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        timer += Time.deltaTime;
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -106,17 +108,20 @@ public class Player : MonoBehaviour
     }
 
     public void Attack(InputAction.CallbackContext context) {
-        GameObject attackRange = Instantiate(attackObject);
-        if (movedRightLast) { // moved right last
-            //GameObject attackRange = Instantiate(attackObject);
-            attackRange.transform.position = new Vector2((this.transform.position.x + 1), this.transform.position.y);
-            Debug.Log("Instantiated attack to the right!");
-        } else { // moved left last
-            //GameObject attackRange = Instantiate(attackObject);
-            attackRange.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
-            Debug.Log("Instantiated attack to the left!");
+        if (timer > attackCooldown) {
+            GameObject attackRange = Instantiate(attackObject);
+            timer = 0.0f;
+            if (movedRightLast) { // moved right last
+                //GameObject attackRange = Instantiate(attackObject);
+                attackRange.transform.position = new Vector2((this.transform.position.x + 1), this.transform.position.y);
+                Debug.Log("Instantiated attack to the right!");
+            } else { // moved left last
+                //GameObject attackRange = Instantiate(attackObject);
+                attackRange.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
+                Debug.Log("Instantiated attack to the left!");
+            }
+            Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
         }
-        Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
     }
     public void Hurt(int damage) {
         this.health -= damage;
