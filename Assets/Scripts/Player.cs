@@ -10,11 +10,16 @@ public class Player : MonoBehaviour
     [SerializeField] private float jump = 0;
     [SerializeField] private int jumpCount = 0;
     [SerializeField] private int maxJumps = 2;
-    [SerializeField] private double health = 100;
+    [SerializeField] private int health = 100;
     private Rigidbody2D rb;
     [SerializeField] private GameObject attackObject;
     private bool movedRightLast = true; // by default, the player is facign towards the center, which would be right
     //private bool movedLeftLast = false;
+    // all disabled colliders
+    private HashSet<Collider2D> disabledColliders = new HashSet<Collider2D>();
+    
+    // tracks current objects colliding
+    private HashSet<Collider2D> currentCollisions = new HashSet<Collider2D>();
 
     private void Awake()
     {
@@ -35,7 +40,8 @@ public class Player : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        moveDirection.x = context.ReadValue<Vector2>().x;
+        Vector2 direction = context.ReadValue<Vector2>();
+        moveDirection.x = direction.x;
         if (moveDirection.x < 0) {
             //movedLeftLast = true;
             movedRightLast = false;
@@ -44,6 +50,18 @@ public class Player : MonoBehaviour
             //movedLeftLast = false;
             movedRightLast = true;
             Debug.Log("Last moved right");
+        }
+        // be able to move through platform
+        if (direction.y < 0 && Mathf.Abs(direction.y) >= Mathf.Abs(direction.x))
+        {
+            foreach (Collider2D collider in currentCollisions)
+            {
+                if (!disabledColliders.Contains(collider))
+                {
+                    Debug.Log("Disabling!");
+                    StartCoroutine(DisableCollision(collider, 0.5f));
+                }
+            }
         }
     }
 
@@ -63,8 +81,13 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        string tag = collision.gameObject.tag;
+        if (tag == "Ground" || tag == "Platform")
         {
+            if (tag == "Platform")
+            {
+                currentCollisions.Add(collision.collider);
+            }
             Vector3 normal = collision.GetContact(0).normal;
             if (normal == Vector3.up)
             {
@@ -73,6 +96,15 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Platform")
+        {
+            currentCollisions.Remove(collision.collider);
+        }
+    }
+
     public void Attack(InputAction.CallbackContext context) {
         GameObject attackRange = Instantiate(attackObject);
         if (movedRightLast) { // moved right last
@@ -86,12 +118,20 @@ public class Player : MonoBehaviour
         }
         Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
     }
-    public void Hurt(double damage) {
-        damage /= 3;
+    public void Hurt(int damage) {
         this.health -= damage;
         if (health <= 0) {
             Debug.Log("I died. ;-;");
             Destroy(this.gameObject);
         }
+    }
+
+    private IEnumerator DisableCollision(Collider2D collider, float time)
+    {
+        disabledColliders.Add(collider);
+        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collider);
+        yield return new WaitForSeconds(time);
+        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collider, false);
+        disabledColliders.Remove(collider);
     }
 }

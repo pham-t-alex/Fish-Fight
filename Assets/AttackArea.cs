@@ -15,7 +15,7 @@ public class AttackArea : MonoBehaviour
     {
         
     }
-    [SerializeField] private double damage = 3.0;
+    [SerializeField] private int damage = 1;
     private void OnTriggerEnter2D(Collider2D collider) {
         Debug.Log("Attack object created, has triggered");
         if (collider.GetComponent<Player>() != null) {
