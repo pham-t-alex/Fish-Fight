@@ -14,8 +14,9 @@ public class FishItemSpawn : MonoBehaviour
     {
         Collider2D collider = GetComponent<Collider2D>();
         relXBoundL = -1 * collider.bounds.extents.x;
-        relXBoundL = collider.bounds.extents.x;
+        relXBoundR = collider.bounds.extents.x;
         relY = collider.bounds.extents.y;
+        FishItemSpawnManager.Instance.AddSpawnPlatform(this, relXBoundR - relXBoundL);
     }
 
     // Update is called once per frame
@@ -24,7 +25,7 @@ public class FishItemSpawn : MonoBehaviour
         
     }
 
-    public void SpawnFishItems(GameObject fishItem)
+    public void SpawnFishItem(GameObject fishItem)
     {
         float x = Random.Range(transform.position.x + relXBoundL, transform.position.x + relXBoundR);
         GameObject obj = Instantiate(fishItem, new Vector2(x, transform.position.y + relY), Quaternion.identity);
