@@ -11,8 +11,14 @@ public class Player : MonoBehaviour
     [SerializeField] private int jumpCount = 0;
     [SerializeField] private int maxJumps = 2;
     [SerializeField] private int health = 100;
-    [SerializeField] private float attackCooldown = 0.25f;
-    private float timer = 0.0f;
+
+    [SerializeField] private float attackCooldown = 0.25f; // how much cooldown time there is between attacks
+    private float attackCooldownTimer = 0.0f; // a timer that keeps track of when another attack can be initiated
+
+    //[SerializeField] private float stunDuration = 0.25f; // how much time a character is stunned after an attack
+    private float stunnedTimer = 0.0f; // a timer keeping track of when another attack can be initiated. 
+                                       // if the timer isn't zero, then the player is stunned.
+
     private Rigidbody2D rb;
     [SerializeField] private GameObject attackObject;
     private bool movedRightLast = true; // by default, the player is facign towards the center, which would be right
@@ -37,31 +43,39 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
+        attackCooldownTimer += Time.deltaTime;
+        if (stunnedTimer < 0) stunnedTimer = 0; // fixes a bug where the stunnedTimer goes below 0. This compensates for that case.
+        
+        if (stunnedTimer > 0) {
+            stunnedTimer -= Time.deltaTime;
+            //Debug.Log("Stunned timer: " + stunnedTimer);
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
     {
-        Vector2 direction = context.ReadValue<Vector2>();
-        moveDirection.x = direction.x;
-        if (moveDirection.x < 0) {
-            //movedLeftLast = true;
-            movedRightLast = false;
-            Debug.Log("Last moved left");
-        } else if (moveDirection.x > 0) {
-            //movedLeftLast = false;
-            movedRightLast = true;
-            Debug.Log("Last moved right");
-        }
-        // be able to move through platform
-        if (direction.y < 0 && Mathf.Abs(direction.y) >= Mathf.Abs(direction.x))
-        {
-            foreach (Collider2D collider in currentCollisions)
+        if (stunnedTimer == 0) {
+            Vector2 direction = context.ReadValue<Vector2>();
+            moveDirection.x = direction.x;
+            if (moveDirection.x < 0) {
+                //movedLeftLast = true;
+                movedRightLast = false;
+                Debug.Log("Last moved left");
+            } else if (moveDirection.x > 0) {
+                //movedLeftLast = false;
+                movedRightLast = true;
+                Debug.Log("Last moved right");
+            }
+            // be able to move through platform
+            if (direction.y < 0 && Mathf.Abs(direction.y) >= Mathf.Abs(direction.x))
             {
-                if (!disabledColliders.Contains(collider))
+                foreach (Collider2D collider in currentCollisions)
                 {
-                    Debug.Log("Disabling!");
-                    StartCoroutine(DisableCollision(collider, 0.5f));
+                    if (!disabledColliders.Contains(collider))
+                    {
+                        Debug.Log("Disabling!");
+                        StartCoroutine(DisableCollision(collider, 0.5f));
+                    }
                 }
             }
         }
@@ -108,9 +122,13 @@ public class Player : MonoBehaviour
     }
 
     public void Attack(InputAction.CallbackContext context) {
-        if (timer > attackCooldown) {
+        if (attackCooldownTimer > attackCooldown) {
             GameObject attackRange = Instantiate(attackObject);
-            timer = 0.0f;
+            attackCooldownTimer = 0.0f;
+            //attackRange.setDirectionFacing(movedRightLast);
+            if (attackRange.TryGetComponent(out AttackArea attackArea)) {
+                attackArea.setDirectionFacing(movedRightLast);
+            }
             if (movedRightLast) { // moved right last
                 //GameObject attackRange = Instantiate(attackObject);
                 attackRange.transform.position = new Vector2((this.transform.position.x + 1), this.transform.position.y);
@@ -123,12 +141,19 @@ public class Player : MonoBehaviour
             Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
         }
     }
-    public void Hurt(int damage) {
+    public void Hurt(int damage, float knockback) {
         this.health -= damage;
         if (health <= 0) {
-            Debug.Log("I died. ;-;");
+            Debug.Log("I died ;-;");
             Destroy(this.gameObject);
         }
+        moveDirection.x = knockback;
+    }
+    public float getXPosition() {
+        return this.transform.position.x;
+    }
+    public void Stun(float stunDuration) {
+        stunnedTimer = stunDuration;
     }
 
     private IEnumerator DisableCollision(Collider2D collider, float time)
