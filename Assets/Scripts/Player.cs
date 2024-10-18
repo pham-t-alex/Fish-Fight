@@ -53,6 +53,16 @@ public class Player : MonoBehaviour
             stunnedTimer -= Time.deltaTime;
             //Debug.Log("Stunned timer: " + stunnedTimer);
         }
+
+        if (fishExpiration > 0)
+        {
+            fishExpiration -= Time.deltaTime;
+        }
+        if (fishExpiration <= 0)
+        {
+            fish = null;
+            GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -126,22 +136,41 @@ public class Player : MonoBehaviour
 
     public void Attack(InputAction.CallbackContext context) {
         if (attackCooldownTimer > attackCooldown) {
-            GameObject attackRange = Instantiate(attackObject);
             attackCooldownTimer = 0.0f;
-            //attackRange.setDirectionFacing(movedRightLast);
-            if (attackRange.TryGetComponent(out AttackArea attackArea)) {
-                attackArea.setDirectionFacing(movedRightLast);
+
+            if (fish != null)
+            {
+                fish.Use();
+                fishUses--;
+                if (fishUses <= 0)
+                {
+                    fish = null;
+                    GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+                }
             }
-            if (movedRightLast) { // moved right last
-                //GameObject attackRange = Instantiate(attackObject);
-                attackRange.transform.position = new Vector2((this.transform.position.x + 1), this.transform.position.y);
-                Debug.Log("Instantiated attack to the right!");
-            } else { // moved left last
-                //GameObject attackRange = Instantiate(attackObject);
-                attackRange.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
-                Debug.Log("Instantiated attack to the left!");
+            else
+            {
+                GameObject attackRange = Instantiate(attackObject);
+
+                //attackRange.setDirectionFacing(movedRightLast);
+                if (attackRange.TryGetComponent(out AttackArea attackArea))
+                {
+                    attackArea.setDirectionFacing(movedRightLast);
+                }
+                if (movedRightLast)
+                { // moved right last
+                  //GameObject attackRange = Instantiate(attackObject);
+                    attackRange.transform.position = new Vector2((this.transform.position.x + 1), this.transform.position.y);
+                    Debug.Log("Instantiated attack to the right!");
+                }
+                else
+                { // moved left last
+                  //GameObject attackRange = Instantiate(attackObject);
+                    attackRange.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
+                    Debug.Log("Instantiated attack to the left!");
+                }
+                Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
             }
-            Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
         }
     }
     public void Hurt(int damage, float knockback) {
@@ -176,6 +205,10 @@ public class Player : MonoBehaviour
             return false;
         }
         fish = f;
+        fishUses = f.GetMaxUses();
+        fishExpiration = f.GetMaxTime();
+        f.SetPlayer(this);
+        GetComponent<SpriteRenderer>().color = new Color(0, 1, 1);
         return true;
     }
 }
