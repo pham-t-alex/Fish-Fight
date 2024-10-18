@@ -7,11 +7,14 @@ public class FishItem : MonoBehaviour
 {
     [SerializeField] private float lifespan;
     [SerializeField] private float countdown;
+    [SerializeField] private Fish fish;
     
     // Start is called before the first frame update
     void Start()
     {
         countdown = lifespan;
+        // temporary
+        fish = new BasicFish();
     }
 
     // Update is called once per frame
@@ -31,6 +34,9 @@ public class FishItem : MonoBehaviour
         {
             return;
         }
-        Destroy(this.gameObject);
+        if (player.PickupFish(fish))
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

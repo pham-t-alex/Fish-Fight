@@ -15,6 +15,9 @@ public class Player : MonoBehaviour
     private float timer = 0.0f;
     private Rigidbody2D rb;
     [SerializeField] private GameObject attackObject;
+    [SerializeField] private Fish fish;
+    [SerializeField] private int fishUses;
+    [SerializeField] private float fishExpiration;
     private bool movedRightLast = true; // by default, the player is facign towards the center, which would be right
     //private bool movedLeftLast = false;
     // all disabled colliders
@@ -138,5 +141,16 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(time);
         Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collider, false);
         disabledColliders.Remove(collider);
+    }
+
+    // returns whether pick up was successful
+    public bool PickupFish(Fish f)
+    {
+        if (fish != null)
+        {
+            return false;
+        }
+        fish = f;
+        return true;
     }
 }
