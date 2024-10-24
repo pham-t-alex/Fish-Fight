@@ -100,7 +100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 3
   stunDuration: 0.25
-  knockback: 0.25
+  xDirectionKnockback: 1000
+  yDirectionKnockback: 1
 --- !u!60 &9040231822756521456
 PolygonCollider2D:
   m_ObjectHideFlags: 0

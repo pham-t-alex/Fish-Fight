@@ -153,10 +153,11 @@ public class Player : MonoBehaviour
                 GameObject attackRange = Instantiate(attackObject);
 
                 //attackRange.setDirectionFacing(movedRightLast);
-                if (attackRange.TryGetComponent(out AttackArea attackArea))
-                {
+                if (attackRange.TryGetComponent(out AttackArea attackArea)) {
                     attackArea.setDirectionFacing(movedRightLast);
+                    attackArea.ThisObjectCreator(this);
                 }
+
                 if (movedRightLast)
                 { // moved right last
                   //GameObject attackRange = Instantiate(attackObject);
@@ -173,18 +174,17 @@ public class Player : MonoBehaviour
             }
         }
     }
-    public void Hurt(int damage, float knockback) {
+    public void Hurt(int damage, Vector2 knockback) {
         this.health -= damage;
         if (health <= 0) {
             Debug.Log("I died ;-;");
             Destroy(this.gameObject);
         }
-        moveDirection.x = knockback;
+        rb.AddForce(knockback);
+        //moveDirection.x = knockback;
     }
-    public float getXPosition() {
-        return this.transform.position.x;
-    }
-    public void Stun(float stunDuration) {
+    public void Stun(float stunDuration) 
+    {
         stunnedTimer = stunDuration;
     }
 
