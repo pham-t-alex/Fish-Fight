@@ -14,6 +14,13 @@ public class FishItemSpawnManager : MonoBehaviour
     [SerializeField] private GameObject fishItem;
     [SerializeField] private int fishCount;
     private static FishItemSpawnManager instance;
+    [Header("Fish Prefabs")]
+    [SerializeField] private List<GameObject> fishPrefabs = new List<GameObject>();
+    public GameObject FishPrefab(int index)
+    {
+        return fishPrefabs[index];
+    }
+
     public static FishItemSpawnManager Instance
     {
         get

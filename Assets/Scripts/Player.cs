@@ -25,6 +25,13 @@ public class Player : MonoBehaviour
     [SerializeField] private int fishUses;
     [SerializeField] private float fishExpiration;
     private bool movedRightLast = true; // by default, the player is facign towards the center, which would be right
+    public bool MovedRightLast
+    {
+        get
+        {
+            return movedRightLast;
+        }
+    }
     //private bool movedLeftLast = false;
     // all disabled colliders
     private HashSet<Collider2D> disabledColliders = new HashSet<Collider2D>();

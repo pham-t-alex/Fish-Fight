@@ -750,6 +750,8 @@ MonoBehaviour:
   currentDelay: 0
   fishItem: {fileID: 455565146700008606, guid: d3847d60769f042b48aebaa2879481bb, type: 3}
   fishCount: 10
+  fishPrefabs:
+  - {fileID: 940650987817617508, guid: 80574e9879b728141862f4005c9aa340, type: 3}
 --- !u!1001 &2665780358862209341
 PrefabInstance:
   m_ObjectHideFlags: 0
