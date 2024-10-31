@@ -11,6 +11,13 @@ public class Player : MonoBehaviour
     [SerializeField] private int jumpCount = 0;
     [SerializeField] private int maxJumps = 2;
     [SerializeField] private int health = 100;
+    public int Health
+    {
+        get
+        {
+            return health;
+        }
+    }
 
     [SerializeField] private float attackCooldown = 0.25f; // how much cooldown time there is between attacks
     private float attackCooldownTimer = 0.0f; // a timer that keeps track of when another attack can be initiated
@@ -39,6 +46,9 @@ public class Player : MonoBehaviour
     // tracks current objects colliding
     private HashSet<Collider2D> currentCollisions = new HashSet<Collider2D>();
 
+    public delegate void HealthChangeEventHandler(int health);
+    public event HealthChangeEventHandler HealthChangeEvent;
+
     private void Awake()
     {
 
@@ -48,6 +58,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        BattleUI.Instance.AddPlayer(this);
     }
 
     // Update is called once per frame
@@ -183,6 +194,7 @@ public class Player : MonoBehaviour
     }
     public void Hurt(int damage, Vector2 knockback) {
         this.health -= damage;
+        HealthChangeEvent(health);
         if (health <= 0) {
             Debug.Log("I died ;-;");
             Destroy(this.gameObject);
