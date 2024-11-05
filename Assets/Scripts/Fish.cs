@@ -16,6 +16,21 @@ public abstract class Fish
 
     public abstract void Use();
 
+    public virtual void Throw()
+    {
+        GameObject fishProj = GameObject.Instantiate(PrefabManager.Instance.FishProjPrefab,
+            player.transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+        fishProj.GetComponent<FishProjectile>().Initialize(player);
+        if (player.MovedRightLast)
+        {
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(2000, 200));
+        }
+        else
+        {
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-2000, 200));
+        }
+    }
+
     public int GetMaxUses()
     {
         return maxUses;

@@ -153,7 +153,7 @@ public class Player : MonoBehaviour
     }
 
     public void Attack(InputAction.CallbackContext context) {
-        if (attackCooldownTimer > attackCooldown) {
+        if (context.started && attackCooldownTimer > attackCooldown) {
             attackCooldownTimer = 0.0f;
 
             if (fish != null)
@@ -192,6 +192,18 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    public void Throw(InputAction.CallbackContext context)
+    {
+        if (context.started && fish != null)
+        {
+            fish.Throw();
+            fishUses = 0;
+            fish = null;
+            GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+        }
+    }
+
     public void Hurt(int damage, Vector2 knockback) {
         this.health -= damage;
         HealthChangeEvent(health);

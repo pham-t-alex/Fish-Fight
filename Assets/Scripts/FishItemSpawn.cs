@@ -15,7 +15,7 @@ public class FishItemSpawn : MonoBehaviour
         Collider2D collider = GetComponent<Collider2D>();
         relXBoundL = -1 * collider.bounds.extents.x;
         relXBoundR = collider.bounds.extents.x;
-        relY = collider.bounds.extents.y;
+        relY = collider.bounds.extents.y + 0.25f;
         FishItemSpawnManager.Instance.AddSpawnPlatform(this, relXBoundR - relXBoundL);
     }
 
