@@ -29,6 +29,26 @@ public class Player : MonoBehaviour
 
     private float blockingTimer = 0;
 
+    private enum Action
+    {
+        None,
+        Attack,
+        Use,
+        Throw
+    }
+    private Action action = Action.None;
+    [SerializeField] private float attackDelay = 0.2f; // delay for attacks
+    [SerializeField] private float useDelay = 0.2f; // delay for fish use (could vary from fish to fish)
+    [SerializeField] private float throwDelay = 0.2f; // delay for throw
+    private float actionDelayTimer = 0;
+    public bool WaitingToAct
+    {
+        get
+        {
+            return actionDelayTimer > 0;
+        }
+    }
+
     private Rigidbody2D rb;
     [SerializeField] private GameObject attackObject;
     private bool blocking = false;
@@ -79,11 +99,20 @@ public class Player : MonoBehaviour
         if (fishExpiration > 0)
         {
             fishExpiration -= Time.deltaTime;
+            if (fishExpiration <= 0 && !WaitingToAct)
+            {
+                fish = null;
+                GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+            }
         }
-        if (fishExpiration <= 0)
+
+        if (actionDelayTimer > 0)
         {
-            fish = null;
-            GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+            actionDelayTimer -= Time.deltaTime;
+            if (actionDelayTimer <= 0)
+            {
+                TriggerAction();
+            }
         }
         if (!blocking) blockingTimer = 0;
         else blockingTimer += Time.deltaTime;
@@ -96,6 +125,10 @@ public class Player : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
+        if (WaitingToAct)
+        {
+            return;
+        }
         if (stunnedTimer == 0) {
             Vector2 direction = context.ReadValue<Vector2>();
             moveDirection.x = direction.x;
@@ -125,6 +158,10 @@ public class Player : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
+        if (WaitingToAct)
+        {
+            return;
+        }
         if (context.started && jumpCount > 0 && !blocking)
         {
             jumpCount--;
@@ -171,26 +208,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Attack(InputAction.CallbackContext context) {
-        if (context.started && attackCooldownTimer > attackCooldown && !blocking) {
-            attackCooldownTimer = 0.0f;
-
-            if (fish != null)
-            {
-                fish.Use();
-                fishUses--;
-                if (fishUses <= 0)
-                {
-                    fish = null;
-                    GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
-                }
-            }
-            else
-            {
+    public void TriggerAction()
+    {
+        switch (action)
+        {
+            case Action.Attack:
                 GameObject attackRange = Instantiate(attackObject);
 
                 //attackRange.setDirectionFacing(movedRightLast);
-                if (attackRange.TryGetComponent(out AttackArea attackArea)) {
+                if (attackRange.TryGetComponent(out AttackArea attackArea))
+                {
                     attackArea.setDirectionFacing(movedRightLast);
                     attackArea.ThisObjectCreator(this);
                 }
@@ -208,18 +235,61 @@ public class Player : MonoBehaviour
                     Debug.Log("Instantiated attack to the left!");
                 }
                 Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
+                break;
+
+            case Action.Use:
+                fish.Use();
+                fishUses--;
+                if (fishUses <= 0 || fishExpiration <= 0)
+                {
+                    fishUses = 0;
+                    fish = null;
+                    GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+                }
+                break;
+
+            case Action.Throw:
+                fish.Throw();
+                fishUses = 0;
+                fish = null;
+                GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+                break;
+        }
+    }
+
+    public void Attack(InputAction.CallbackContext context) {
+        if (WaitingToAct)
+        {
+            return;
+        }
+        if (context.started && attackCooldownTimer > attackCooldown && !blocking) {
+            attackCooldownTimer = 0.0f;
+
+            if (fish != null)
+            {
+                action = Action.Use;
+                actionDelayTimer = useDelay;
+            }
+            else
+            {
+                action = Action.Attack;
+                actionDelayTimer = attackDelay;
             }
         }
+        Debug.Log("hm 2");
     }
 
     public void Throw(InputAction.CallbackContext context)
     {
+        if (WaitingToAct)
+        {
+            return;
+        }
+        Debug.Log("hm");
         if (context.started && fish != null && !blocking)
         {
-            fish.Throw();
-            fishUses = 0;
-            fish = null;
-            GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+            action = Action.Throw;
+            actionDelayTimer = throwDelay;
         }
     }
 
