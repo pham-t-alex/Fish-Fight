@@ -48,6 +48,7 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D rb;
     [SerializeField] private GameObject attackObject;
+    [SerializeField] private GameObject counterObject;
     [SerializeField] private Fish fish;
     [SerializeField] private int fishUses;
     [SerializeField] private float fishExpiration;
@@ -272,6 +273,43 @@ public class Player : MonoBehaviour
             action = Action.Throw;
             actionDelayTimer = throwDelay;
         }
+    }
+
+    public void Counter(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            GameObject counter = Instantiate(counterObject);
+
+            if (counter.TryGetComponent(out CounterArea counterArea))
+            {
+                counterArea.setDirectionFacing(movedRightLast);
+                counterArea.ThisObjectCreator(this);
+            }
+
+            if (movedRightLast)
+            { // moved right last
+              //GameObject attackRange = Instantiate(attackObject);
+                counter.transform.position = new Vector2((this.transform.position.x + 1), this.transform.position.y);
+                Debug.Log("Instantiated attack to the right!");
+            }
+            else
+            { // moved left last
+              //GameObject attackRange = Instantiate(attackObject);
+                counter.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
+                Debug.Log("Instantiated attack to the left!");
+            }
+            Destroy(counter, 0.5f /* This number is how long the attack will last*/);
+        }
+    }
+
+    public void Disarm()
+    {
+        action = Action.None;
+        actionDelayTimer = 0;
+        fishUses = 0;
+        fish = null;
+        GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
     }
 
     public void Hurt(int damage, Vector2 knockback) {
