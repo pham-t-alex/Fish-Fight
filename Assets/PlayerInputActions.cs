@@ -67,9 +67,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Block"",
                     ""type"": ""Button"",
                     ""id"": ""4681a154-1b02-477d-b239-33a18a908217"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Counter"",
                     ""type"": ""Button"",
-                    ""id"": ""54cd9731-4f22-4ebc-bc7a-49271600f29e"",
+                    ""id"": ""a38d7e8a-ef7f-4fee-a46c-32f3f3b56f49"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -327,8 +333,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Block"",
-                    ""id"": ""b7b02c68-1a4c-45c1-bb6b-da5f7e3a222a"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7232a921-ace7-4e7c-ad40-e650aeb8fc5a"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -338,8 +349,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7232a921-ace7-4e7c-ad40-e650aeb8fc5a"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""id"": ""49edff89-7e79-4e69-8818-b1d714b5b6cb"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
