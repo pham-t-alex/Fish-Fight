@@ -25,6 +25,29 @@ public class Player : MonoBehaviour
     //[SerializeField] private float stunDuration = 0.25f; // how much time a character is stunned after an attack
     private float stunnedTimer = 0.0f; // a timer keeping track of when another attack can be initiated. 
                                        // if the timer isn't zero, then the player is stunned.
+    [SerializeField] private float useBlockTimeLimit = 3.0f;
+
+    private float blockingTimer = 0;
+
+    private enum Action
+    {
+        None,
+        Attack,
+        Use,
+        Throw
+    }
+    private Action action = Action.None;
+    [SerializeField] private float attackDelay = 0.2f; // delay for attacks
+    [SerializeField] private float useDelay = 0.2f; // delay for fish use (could vary from fish to fish)
+    [SerializeField] private float throwDelay = 0.2f; // delay for throw
+    private float actionDelayTimer = 0;
+    public bool WaitingToAct
+    {
+        get
+        {
+            return actionDelayTimer > 0;
+        }
+    }
 
     private enum Action
     {
@@ -48,6 +71,7 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D rb;
     [SerializeField] private GameObject attackObject;
+    private bool blocking = false;
     [SerializeField] private GameObject counterObject;
     [SerializeField] private Fish fish;
     [SerializeField] private int fishUses;
@@ -111,6 +135,13 @@ public class Player : MonoBehaviour
                 TriggerAction();
             }
         }
+        if (!blocking) blockingTimer = 0;
+        else blockingTimer += Time.deltaTime;
+
+        if (blockingTimer > useBlockTimeLimit) {
+            blocking = false;
+            Debug.Log("blocking changed to false");
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -152,7 +183,7 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        if (context.started && jumpCount > 0)
+        if (context.started && jumpCount > 0 && !blocking)
         {
             jumpCount--;
             rb.velocity = new Vector2(rb.velocity.x, jump);
@@ -161,7 +192,15 @@ public class Player : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        rb.velocity = new Vector2(moveDirection.x * speed, rb.velocity.y);
+        if (stunnedTimer == 0) {
+            if (blocking) {
+                rb.velocity = new Vector2(moveDirection.x * speed / 2, rb.velocity.y);
+                //Debug.Log("speed: " + (speed / 2));
+            } else {
+                rb.velocity = new Vector2(moveDirection.x * speed, rb.velocity.y);
+                //Debug.Log("speed: " + speed);
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -206,13 +245,13 @@ public class Player : MonoBehaviour
 
                 if (movedRightLast)
                 { // moved right last
-                  //GameObject attackRange = Instantiate(attackObject);
+                //GameObject attackRange = Instantiate(attackObject);
                     attackRange.transform.position = new Vector2((this.transform.position.x + 1), this.transform.position.y);
                     Debug.Log("Instantiated attack to the right!");
                 }
                 else
                 { // moved left last
-                  //GameObject attackRange = Instantiate(attackObject);
+                //GameObject attackRange = Instantiate(attackObject);
                     attackRange.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
                     Debug.Log("Instantiated attack to the left!");
                 }
@@ -244,7 +283,7 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        if (context.started && attackCooldownTimer > attackCooldown) {
+        if (context.started && attackCooldownTimer > attackCooldown && !blocking) {
             attackCooldownTimer = 0.0f;
 
             if (fish != null)
@@ -268,7 +307,7 @@ public class Player : MonoBehaviour
             return;
         }
         Debug.Log("hm");
-        if (context.started && fish != null)
+        if (context.started && fish != null && !blocking)
         {
             action = Action.Throw;
             actionDelayTimer = throwDelay;
@@ -313,17 +352,34 @@ public class Player : MonoBehaviour
     }
 
     public void Hurt(int damage, Vector2 knockback) {
-        this.health -= damage;
-        HealthChangeEvent(health);
-        if (health <= 0) {
-            Debug.Log("I died ;-;");
-            Destroy(this.gameObject);
+        //Debug.Log("Damage taken: " + damage);
+        if (!blocking) {
+            this.health -= damage;
+            HealthChangeEvent(health);
+            if (health <= 0) {
+                Debug.Log("I died ;-;");
+                Destroy(this.gameObject);
+            }
+            rb.AddForce(knockback);
+            //moveDirection.x = knockback;
+        } else {
+            rb.AddForce(new Vector2(knockback.x / 2.0f, knockback.y / 2.0f)); // if blocking is true, there is still knockback, but less than the knockback vector
         }
-        rb.AddForce(knockback);
-        //moveDirection.x = knockback;
     }
-    public void Stun(float stunDuration) 
+    public void Block(InputAction.CallbackContext context) {
+
+        if (!context.canceled) {
+            blocking = true;
+            Debug.Log("blocking true");
+        } else {
+            blocking = false;
+            Debug.Log("blocking false");
+        }
+    }
+    public void Stun(float stunDuration)
     {
+        if (blocking) stunDuration /= 2;
+        //Debug.Log("Stun duration: " + stunDuration);
         stunnedTimer = stunDuration;
     }
 

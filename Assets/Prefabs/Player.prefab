@@ -178,9 +178,10 @@ MonoBehaviour:
   maxJumps: 2
   health: 100
   attackCooldown: 0.25
-  attackDelay: 1
-  useDelay: 0.2
-  throwDelay: 0.2
+  useBlockTimeLimit: 3
+  attackDelay: 0.5
+  useDelay: 0.5
+  throwDelay: 0.5
   attackObject: {fileID: 940650987817617508, guid: a90503956466d43ccbee724a1618a2e2, type: 3}
   counterObject: {fileID: 940650987817617508, guid: 70589c389c14a1a48a837bbf741e5210, type: 3}
   fishUses: 0
@@ -318,6 +319,22 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4201527087307601395}
         m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: Block
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4681a154-1b02-477d-b239-33a18a908217
+    m_ActionName: Player/Block[/Mouse/rightButton,/XboxOneGampadMacOSWireless/leftTrigger]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4201527087307601395}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
         m_MethodName: Counter
         m_Mode: 0
         m_Arguments:
@@ -328,7 +345,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_ActionId: 54cd9731-4f22-4ebc-bc7a-49271600f29e
+    m_ActionId: a38d7e8a-ef7f-4fee-a46c-32f3f3b56f49
     m_ActionName: Player/Counter[/Mouse/rightButton]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
