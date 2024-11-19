@@ -29,26 +29,7 @@ public class Player : MonoBehaviour
 
     private float blockingTimer = 0;
 
-    private enum Action
-    {
-        None,
-        Attack,
-        Use,
-        Throw
-    }
-    private Action action = Action.None;
-    [SerializeField] private float attackDelay = 0.2f; // delay for attacks
-    [SerializeField] private float useDelay = 0.2f; // delay for fish use (could vary from fish to fish)
-    [SerializeField] private float throwDelay = 0.2f; // delay for throw
-    private float actionDelayTimer = 0;
-    public bool WaitingToAct
-    {
-        get
-        {
-            return actionDelayTimer > 0;
-        }
-    }
-
+    
     private enum Action
     {
         None,
