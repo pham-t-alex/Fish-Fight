@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,18 +22,33 @@ public class Player : MonoBehaviour
         }
     }
 
+    private bool moving = false;
+
     [SerializeField] private float attackCooldown = 0.25f; // how much cooldown time there is between attacks
     private float attackCooldownTimer = 0.0f; // a timer that keeps track of when another attack can be initiated
 
     //[SerializeField] private float stunDuration = 0.25f; // how much time a character is stunned after an attack
     private float stunnedTimer = 0.0f; // a timer keeping track of when another attack can be initiated. 
                                        // if the timer isn't zero, then the player is stunned.
+    public bool Stunned
+    {
+        get
+        {
+            return stunnedTimer > 0;
+        }
+    }
     [SerializeField] private float useBlockTimeLimit = 3.0f;
 
     private float blockingTimer = 0;
     
-    private bool usingDash = false;
-
+    private float busyTimer = 0;
+    public bool Busy
+    {
+        get
+        {
+            return busyTimer > 0;
+        }
+    }
     
     private enum Action
     {
@@ -53,6 +69,8 @@ public class Player : MonoBehaviour
             return actionDelayTimer > 0;
         }
     }
+
+    [SerializeField] private float dashTime = 2f;
 
     private Rigidbody2D rb;
     [SerializeField] private GameObject attackObject;
@@ -102,6 +120,12 @@ public class Player : MonoBehaviour
             //Debug.Log("Stunned timer: " + stunnedTimer);
         }
 
+        if (busyTimer > 0)
+        {
+            busyTimer -= Time.deltaTime;
+            if (busyTimer <= 0) busyTimer = 0;
+        }
+
         if (fishExpiration > 0)
         {
             fishExpiration -= Time.deltaTime;
@@ -127,38 +151,43 @@ public class Player : MonoBehaviour
             blocking = false;
             Debug.Log("blocking changed to false");
         }
-
-        
     }
 
     public void Move(InputAction.CallbackContext context)
     {
-        if (WaitingToAct || usingDash)
+        if (context.canceled && moving)
         {
+            moveDirection.x = 0;
+            moving = false;
+            rb.velocity = new Vector2(0, rb.velocity.y);
             return;
         }
-        if (stunnedTimer == 0) {
-            Vector2 direction = context.ReadValue<Vector2>();
-            moveDirection.x = direction.x;
-            if (moveDirection.x < 0) {
-                //movedLeftLast = true;
-                movedRightLast = false;
-                Debug.Log("Last moved left");
-            } else if (moveDirection.x > 0) {
-                //movedLeftLast = false;
-                movedRightLast = true;
-                Debug.Log("Last moved right");
-            }
-            // be able to move through platform
-            if (direction.y < 0 && Mathf.Abs(direction.y) >= Mathf.Abs(direction.x))
+        if (WaitingToAct || Busy || Stunned)
+        {
+            moving = false;
+            return;
+        }
+        moving = true;
+        Vector2 direction = context.ReadValue<Vector2>();
+        moveDirection.x = direction.x;
+        if (moveDirection.x < 0) {
+            //movedLeftLast = true;
+            movedRightLast = false;
+            Debug.Log("Last moved left");
+        } else if (moveDirection.x > 0) {
+            //movedLeftLast = false;
+            movedRightLast = true;
+            Debug.Log("Last moved right");
+        }
+        // be able to move through platform
+        if (direction.y < 0 && Mathf.Abs(direction.y) >= Mathf.Abs(direction.x))
+        {
+            foreach (Collider2D collider in currentCollisions)
             {
-                foreach (Collider2D collider in currentCollisions)
+                if (!disabledColliders.Contains(collider))
                 {
-                    if (!disabledColliders.Contains(collider))
-                    {
-                        Debug.Log("Disabling!");
-                        StartCoroutine(DisableCollision(collider, 0.5f));
-                    }
+                    Debug.Log("Disabling!");
+                    StartCoroutine(DisableCollision(collider, 0.5f));
                 }
             }
         }
@@ -166,7 +195,7 @@ public class Player : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (WaitingToAct || usingDash)
+        if (WaitingToAct || Busy)
         {
             return;
         }
@@ -179,7 +208,7 @@ public class Player : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        if (stunnedTimer == 0) {
+        if (moving) {
             if (blocking) {
                 rb.velocity = new Vector2(moveDirection.x * speed / 2, rb.velocity.y);
                 //Debug.Log("speed: " + (speed / 2));
@@ -266,11 +295,12 @@ public class Player : MonoBehaviour
     }
 
     public void Attack(InputAction.CallbackContext context) {
-        if (WaitingToAct)
+        if (WaitingToAct || Busy)
         {
             return;
         }
         if (context.started && attackCooldownTimer > attackCooldown && !blocking) {
+            moving = false;
             attackCooldownTimer = 0.0f;
 
             if (fish != null)
@@ -289,13 +319,14 @@ public class Player : MonoBehaviour
 
     public void Throw(InputAction.CallbackContext context)
     {
-        if (WaitingToAct)
+        if (WaitingToAct || Busy)
         {
             return;
         }
         Debug.Log("hm");
         if (context.started && fish != null && !blocking)
         {
+            moving = false;
             action = Action.Throw;
             actionDelayTimer = throwDelay;
         }
@@ -305,6 +336,7 @@ public class Player : MonoBehaviour
     {
         if (context.started)
         {
+            moving = false;
             GameObject counter = Instantiate(counterObject);
 
             if (counter.TryGetComponent(out CounterArea counterArea))
@@ -354,7 +386,7 @@ public class Player : MonoBehaviour
         }
     }
     public void Block(InputAction.CallbackContext context) {
-
+        moving = false;
         if (!context.canceled) {
             blocking = true;
             Debug.Log("blocking true");
@@ -365,20 +397,18 @@ public class Player : MonoBehaviour
     }
     public void Stun(float stunDuration)
     {
+        moving = false;
         if (blocking) stunDuration /= 2;
         //Debug.Log("Stun duration: " + stunDuration);
         stunnedTimer = stunDuration;
     }
     public void Dash(InputAction.CallbackContext context) {
-        if (context.started) {
-            usingDash = true;
+        if (context.started && !Busy) {
+            moving = false;
+            busyTimer = dashTime;
             Debug.Log("Dash initiated");
             if (movedRightLast) rb.AddForce(new Vector2(xDirectionDash, yDirectionDash));
             else rb.AddForce(new Vector2(xDirectionDash * -1, yDirectionDash));
-        }
-        if (context.canceled) {
-            Debug.Log("canceled dash");
-            usingDash = false;
         }
     }
 

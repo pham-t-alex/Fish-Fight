@@ -146,10 +146,10 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 2
   m_AngularDrag: 0.05
   m_GravityScale: 2
-  m_Material: {fileID: 6200000, guid: 9259431460cd8794e88c8d517a786315, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -177,13 +177,14 @@ MonoBehaviour:
   jumpCount: 0
   maxJumps: 2
   health: 100
-  xDirectionDash: 2000
+  xDirectionDash: 1000
   yDirectionDash: 10
   attackCooldown: 0.25
   useBlockTimeLimit: 3
   attackDelay: 0.5
   useDelay: 0.5
   throwDelay: 0.5
+  dashTime: 0.5
   attackObject: {fileID: 940650987817617508, guid: a90503956466d43ccbee724a1618a2e2, type: 3}
   counterObject: {fileID: 940650987817617508, guid: 70589c389c14a1a48a837bbf741e5210, type: 3}
   fishUses: 0
