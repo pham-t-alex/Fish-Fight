@@ -123,7 +123,14 @@ public class Player : MonoBehaviour
         if (busyTimer > 0)
         {
             busyTimer -= Time.deltaTime;
-            if (busyTimer <= 0) busyTimer = 0;
+            if (busyTimer <= 0)
+            {
+                if (!Stunned)
+                {
+                    rb.velocity = new Vector2(0, rb.velocity.y);
+                }
+                busyTimer = 0;
+            }
         }
 
         if (fishExpiration > 0)
@@ -157,14 +164,12 @@ public class Player : MonoBehaviour
     {
         if (context.canceled && moving)
         {
-            moveDirection.x = 0;
             moving = false;
-            rb.velocity = new Vector2(0, rb.velocity.y);
+            InterruptMovement();
             return;
         }
-        if (WaitingToAct || Busy || Stunned)
+        if (WaitingToAct || Busy || Stunned || blocking)
         {
-            moving = false;
             return;
         }
         moving = true;
@@ -193,13 +198,19 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void InterruptMovement()
+    {
+        rb.velocity = new Vector2(0, rb.velocity.y);
+        return;
+    }
+
     public void Jump(InputAction.CallbackContext context)
     {
-        if (WaitingToAct || Busy)
+        if (WaitingToAct || Busy || Stunned || blocking)
         {
             return;
         }
-        if (context.started && jumpCount > 0 && !blocking)
+        if (context.started && jumpCount > 0)
         {
             jumpCount--;
             rb.velocity = new Vector2(rb.velocity.x, jump);
@@ -208,7 +219,7 @@ public class Player : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        if (moving) {
+        if (moving && !(WaitingToAct || Busy || Stunned || blocking)) {
             if (blocking) {
                 rb.velocity = new Vector2(moveDirection.x * speed / 2, rb.velocity.y);
                 //Debug.Log("speed: " + (speed / 2));
@@ -295,12 +306,12 @@ public class Player : MonoBehaviour
     }
 
     public void Attack(InputAction.CallbackContext context) {
-        if (WaitingToAct || Busy)
+        if (WaitingToAct || Busy || Stunned || blocking)
         {
             return;
         }
-        if (context.started && attackCooldownTimer > attackCooldown && !blocking) {
-            moving = false;
+        if (context.started && attackCooldownTimer > attackCooldown) {
+            InterruptMovement();
             attackCooldownTimer = 0.0f;
 
             if (fish != null)
@@ -319,14 +330,13 @@ public class Player : MonoBehaviour
 
     public void Throw(InputAction.CallbackContext context)
     {
-        if (WaitingToAct || Busy)
+        if (WaitingToAct || Busy || Stunned || blocking)
         {
             return;
         }
-        Debug.Log("hm");
-        if (context.started && fish != null && !blocking)
+        if (context.started && fish != null)
         {
-            moving = false;
+            InterruptMovement();
             action = Action.Throw;
             actionDelayTimer = throwDelay;
         }
@@ -334,9 +344,13 @@ public class Player : MonoBehaviour
 
     public void Counter(InputAction.CallbackContext context)
     {
+        if (WaitingToAct || Busy || Stunned || blocking)
+        {
+            return;
+        }
         if (context.started)
         {
-            moving = false;
+            InterruptMovement();
             GameObject counter = Instantiate(counterObject);
 
             if (counter.TryGetComponent(out CounterArea counterArea))
@@ -379,6 +393,8 @@ public class Player : MonoBehaviour
                 Debug.Log("I died ;-;");
                 Destroy(this.gameObject);
             }
+            InterruptMovement();
+            rb.velocity = Vector2.zero;
             rb.AddForce(knockback);
             //moveDirection.x = knockback;
         } else {
@@ -386,25 +402,33 @@ public class Player : MonoBehaviour
         }
     }
     public void Block(InputAction.CallbackContext context) {
-        moving = false;
-        if (!context.canceled) {
+        if (WaitingToAct || Busy || Stunned)
+        {
+            return;
+        }
+        if (context.started)
+        {
             blocking = true;
             Debug.Log("blocking true");
-        } else {
+            InterruptMovement();
+        } else if (!context.canceled) {
             blocking = false;
             Debug.Log("blocking false");
         }
     }
     public void Stun(float stunDuration)
     {
-        moving = false;
         if (blocking) stunDuration /= 2;
         //Debug.Log("Stun duration: " + stunDuration);
         stunnedTimer = stunDuration;
     }
     public void Dash(InputAction.CallbackContext context) {
-        if (context.started && !Busy) {
-            moving = false;
+        if (WaitingToAct || Busy || Stunned || blocking)
+        {
+            return;
+        }
+        if (context.started) {
+            InterruptMovement();
             busyTimer = dashTime;
             Debug.Log("Dash initiated");
             if (movedRightLast) rb.AddForce(new Vector2(xDirectionDash, yDirectionDash));
