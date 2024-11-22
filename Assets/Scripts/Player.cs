@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     [SerializeField] private int jumpCount = 0;
     [SerializeField] private int maxJumps = 2;
     [SerializeField] private int health = 100;
+    [SerializeField] private float xDirectionDash = 800.0f;
+    [SerializeField] private float yDirectionDash = 10.0f;
     public int Health
     {
         get
@@ -28,6 +30,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float useBlockTimeLimit = 3.0f;
 
     private float blockingTimer = 0;
+    
+    private bool usingDash = false;
 
     
     private enum Action
@@ -123,11 +127,13 @@ public class Player : MonoBehaviour
             blocking = false;
             Debug.Log("blocking changed to false");
         }
+
+        
     }
 
     public void Move(InputAction.CallbackContext context)
     {
-        if (WaitingToAct)
+        if (WaitingToAct || usingDash)
         {
             return;
         }
@@ -160,7 +166,7 @@ public class Player : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (WaitingToAct)
+        if (WaitingToAct || usingDash)
         {
             return;
         }
@@ -362,6 +368,18 @@ public class Player : MonoBehaviour
         if (blocking) stunDuration /= 2;
         //Debug.Log("Stun duration: " + stunDuration);
         stunnedTimer = stunDuration;
+    }
+    public void Dash(InputAction.CallbackContext context) {
+        if (context.started) {
+            usingDash = true;
+            Debug.Log("Dash initiated");
+            if (movedRightLast) rb.AddForce(new Vector2(xDirectionDash, yDirectionDash));
+            else rb.AddForce(new Vector2(xDirectionDash * -1, yDirectionDash));
+        }
+        if (context.canceled) {
+            Debug.Log("canceled dash");
+            usingDash = false;
+        }
     }
 
     private IEnumerator DisableCollision(Collider2D collider, float time)
