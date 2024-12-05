@@ -40,18 +40,23 @@ public class FishProjectile : MonoBehaviour
         }
         else if (p != null && p != attacker)
         {
-            Vector2 vel = GetComponent<Rigidbody2D>().velocity;
-            if (vel.x < 0)
-            {
-                xDirectionKnockback *= -1;
-            }
-            else if (vel.x == 0)
-            {
-                xDirectionKnockback = 0;
-            }
-            p.Hurt(damage, new Vector2(xDirectionKnockback, yDirectionKnockback));
-            p.Stun(stunDuration);
+            Damage(p);
             Destroy(gameObject);
         }
+    }
+
+    protected void Damage(Player p)
+    {
+        Vector2 vel = GetComponent<Rigidbody2D>().velocity;
+        if (vel.x < 0)
+        {
+            xDirectionKnockback *= -1;
+        }
+        else if (vel.x == 0)
+        {
+            xDirectionKnockback = 0;
+        }
+        p.Hurt(damage, new Vector2(xDirectionKnockback, yDirectionKnockback));
+        p.Stun(stunDuration);
     }
 }

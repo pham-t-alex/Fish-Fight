@@ -53,14 +53,15 @@ public class PufferfishProjectile : FishProjectile
         }
         if (state == State.Slamming)
         {
-            if (tag == "Player")
+            if (p != null)
             {
-                base.OnTriggerEnter2D(collision);
+                Damage(p);
+                Destroy(gameObject);
             }
         }
         else if (state == State.Bounced)
         {
-            if (tag == "Player" || tag == "Ground" || tag == "Border")
+            if (p != null || tag == "Ground" || tag == "Border")
             {
                 Destroy(gameObject);
             }
@@ -70,10 +71,9 @@ public class PufferfishProjectile : FishProjectile
             if (tag == "Ground" || tag == "Platform")
             {
                 state = State.Bounced;
-                Debug.Log("Bounced");
                 rb.velocity = new Vector2(rb.velocity.x, Mathf.Abs(rb.velocity.y));
             }
-            else if (tag == "Player" || tag == "Border")
+            else if (p != null || tag == "Border")
             {
                 Destroy(gameObject);
             }
@@ -84,7 +84,7 @@ public class PufferfishProjectile : FishProjectile
     {
         yield return new WaitForSeconds(0.2f);
         state = State.Slamming;
-        rb.AddForce(new Vector2(0, -1000));
+        rb.AddForce(new Vector2(0, -1000), ForceMode2D.Impulse);
         Destroy(gameObject, 5);
     }
 }

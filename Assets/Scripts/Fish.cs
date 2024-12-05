@@ -23,11 +23,11 @@ public abstract class Fish
         fishProj.GetComponent<FishProjectile>().Initialize(player);
         if (player.MovedRightLast)
         {
-            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(2000, 200));
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(25, 2), ForceMode2D.Impulse);
         }
         else
         {
-            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-2000, 200));
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-25, 2), ForceMode2D.Impulse);
         }
     }
 

@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 3
   stunDuration: 1
-  xDirectionKnockback: 25
+  xDirectionKnockback: 200
   yDirectionKnockback: 1
 --- !u!61 &6303937628040551585
 BoxCollider2D:

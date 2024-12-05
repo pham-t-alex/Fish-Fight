@@ -158,32 +158,41 @@ public class Player : MonoBehaviour
             blocking = false;
             Debug.Log("blocking changed to false");
         }
+
+        Debug.Log(moveDirection.x);
     }
 
     public void Move(InputAction.CallbackContext context)
     {
-        if (context.canceled && moving)
+        if (context.canceled)
         {
-            moving = false;
-            InterruptMovement();
-            return;
-        }
-        if (WaitingToAct || Busy || Stunned || blocking)
-        {
+            if (moving)
+            {
+                moving = false;
+                InterruptMovement();
+            }
             return;
         }
         moving = true;
         Vector2 direction = context.ReadValue<Vector2>();
         moveDirection.x = direction.x;
-        if (moveDirection.x < 0) {
+        if (moveDirection.x < 0)
+        {
             //movedLeftLast = true;
             movedRightLast = false;
             Debug.Log("Last moved left");
-        } else if (moveDirection.x > 0) {
+        }
+        else if (moveDirection.x > 0)
+        {
             //movedLeftLast = false;
             movedRightLast = true;
             Debug.Log("Last moved right");
         }
+        if (WaitingToAct || Busy || Stunned || blocking)
+        {
+            return;
+        }
+        
         // be able to move through platform
         if (direction.y < 0 && Mathf.Abs(direction.y) >= Mathf.Abs(direction.x))
         {
@@ -213,7 +222,8 @@ public class Player : MonoBehaviour
         if (context.started && jumpCount > 0)
         {
             jumpCount--;
-            rb.velocity = new Vector2(rb.velocity.x, jump);
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+            rb.AddForce(new Vector2(0, jump), ForceMode2D.Impulse);
             Debug.Log("Jumped!");
         }
     }
@@ -398,7 +408,7 @@ public class Player : MonoBehaviour
             rb.AddForce(knockback);
             //moveDirection.x = knockback;
         } else {
-            rb.AddForce(new Vector2(knockback.x / 2.0f, knockback.y / 2.0f)); // if blocking is true, there is still knockback, but less than the knockback vector
+            rb.AddForce(new Vector2(knockback.x / 2.0f, knockback.y / 2.0f), ForceMode2D.Impulse); // if blocking is true, there is still knockback, but less than the knockback vector
         }
     }
     public void Block(InputAction.CallbackContext context) {
@@ -431,8 +441,8 @@ public class Player : MonoBehaviour
             InterruptMovement();
             busyTimer = dashTime;
             Debug.Log("Dash initiated");
-            if (movedRightLast) rb.AddForce(new Vector2(xDirectionDash, yDirectionDash));
-            else rb.AddForce(new Vector2(xDirectionDash * -1, yDirectionDash));
+            if (movedRightLast) rb.AddForce(new Vector2(xDirectionDash, yDirectionDash), ForceMode2D.Impulse);
+            else rb.AddForce(new Vector2(xDirectionDash * -1, yDirectionDash), ForceMode2D.Impulse);
         }
     }
 
