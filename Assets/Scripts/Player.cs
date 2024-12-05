@@ -6,7 +6,10 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+
     private Vector2 moveDirection = Vector2.zero;
+    private Animator pAnimator;
+    private float deathTimer = 0.0f;
     [SerializeField] private float speed = 0;
     [SerializeField] private float jump = 0;
     [SerializeField] private int jumpCount = 0;
@@ -23,6 +26,7 @@ public class Player : MonoBehaviour
     }
 
     private bool moving = false;
+    private bool dead = false;
 
     [SerializeField] private float attackCooldown = 0.25f; // how much cooldown time there is between attacks
     private float attackCooldownTimer = 0.0f; // a timer that keeps track of when another attack can be initiated
@@ -107,12 +111,22 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         BattleUI.Instance.AddPlayer(this);
+        pAnimator = GetComponent<Animator>();
+        GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
     }
 
     // Update is called once per frame
     void Update()
     {
         attackCooldownTimer += Time.deltaTime;
+        //if (dashAnimationTimer > 1) pAnimator.ResetTrigger("TrDash");
+        if (dead) deathTimer += Time.deltaTime;
+
+        if (deathTimer > 1.2f) Destroy(this.gameObject);
+
+
+        //if (blocking && )
+
         if (stunnedTimer < 0) stunnedTimer = 0; // fixes a bug where the stunnedTimer goes below 0. This compensates for that case.
         
         if (stunnedTimer > 0) {
@@ -139,7 +153,8 @@ public class Player : MonoBehaviour
             if (fishExpiration <= 0 && !WaitingToAct)
             {
                 fish = null;
-                GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+                //GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+                GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
             }
         }
 
@@ -154,8 +169,16 @@ public class Player : MonoBehaviour
         if (!blocking) blockingTimer = 0;
         else blockingTimer += Time.deltaTime;
 
+        
+        if (blockingTimer >= 1.2f && blocking) {
+            pAnimator.speed = 0;
+        }
+        
+
         if (blockingTimer > useBlockTimeLimit) {
             blocking = false;
+            pAnimator.speed = 1;
+
             Debug.Log("blocking changed to false");
         }
     }
@@ -165,6 +188,9 @@ public class Player : MonoBehaviour
         if (context.canceled && moving)
         {
             moving = false;
+            pAnimator.SetBool("Walking", false);
+            //pAnimator.Stop("Walking");
+            //Debug.Log("Walking now false");
             InterruptMovement();
             return;
         }
@@ -178,12 +204,15 @@ public class Player : MonoBehaviour
         if (moveDirection.x < 0) {
             //movedLeftLast = true;
             movedRightLast = false;
+            GetComponent<SpriteRenderer>().flipX = false;
             Debug.Log("Last moved left");
         } else if (moveDirection.x > 0) {
             //movedLeftLast = false;
             movedRightLast = true;
+            GetComponent<SpriteRenderer>().flipX = true;
             Debug.Log("Last moved right");
         }
+        pAnimator.SetBool("Walking", true);
         // be able to move through platform
         if (direction.y < 0 && Mathf.Abs(direction.y) >= Mathf.Abs(direction.x))
         {
@@ -214,6 +243,7 @@ public class Player : MonoBehaviour
         {
             jumpCount--;
             rb.velocity = new Vector2(rb.velocity.x, jump);
+            pAnimator.SetTrigger("TrJump");
             Debug.Log("Jumped!");
         }
     }
@@ -286,13 +316,15 @@ public class Player : MonoBehaviour
                 break;
 
             case Action.Use:
+                pAnimator.SetBool("Walking", false);
                 fish.Use();
                 fishUses--;
                 if (fishUses <= 0 || fishExpiration <= 0)
                 {
                     fishUses = 0;
                     fish = null;
-                    GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+                    //GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+                    GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
                 }
                 break;
 
@@ -300,7 +332,8 @@ public class Player : MonoBehaviour
                 fish.Throw();
                 fishUses = 0;
                 fish = null;
-                GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+                //GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+                GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
                 break;
         }
     }
@@ -311,6 +344,7 @@ public class Player : MonoBehaviour
             return;
         }
         if (context.started && attackCooldownTimer > attackCooldown) {
+            pAnimator.SetBool("Walking", false);
             InterruptMovement();
             attackCooldownTimer = 0.0f;
 
@@ -324,6 +358,11 @@ public class Player : MonoBehaviour
                 action = Action.Attack;
                 actionDelayTimer = attackDelay;
             }
+            
+            // random value chooses random number from 0 to 1 inclusive
+            if (Random.value > 0.5f) pAnimator.SetTrigger("TrKick");
+            else pAnimator.SetTrigger("TrPunch");
+            
         }
         Debug.Log("hm 2");
     }
@@ -336,6 +375,7 @@ public class Player : MonoBehaviour
         }
         if (context.started && fish != null)
         {
+            pAnimator.SetBool("Walking", false);
             InterruptMovement();
             action = Action.Throw;
             actionDelayTimer = throwDelay;
@@ -351,6 +391,7 @@ public class Player : MonoBehaviour
         if (context.started)
         {
             InterruptMovement();
+            pAnimator.SetBool("Walking", false);
             GameObject counter = Instantiate(counterObject);
 
             if (counter.TryGetComponent(out CounterArea counterArea))
@@ -371,6 +412,8 @@ public class Player : MonoBehaviour
                 counter.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
                 Debug.Log("Instantiated attack to the left!");
             }
+            if (Random.value > 0.5f) pAnimator.SetTrigger("TrKick");
+            else pAnimator.SetTrigger("TrPunch");
             Destroy(counter, 0.5f /* This number is how long the attack will last*/);
         }
     }
@@ -381,7 +424,8 @@ public class Player : MonoBehaviour
         actionDelayTimer = 0;
         fishUses = 0;
         fish = null;
-        GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+        //GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
+        GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
     }
 
     public void Hurt(int damage, Vector2 knockback) {
@@ -389,9 +433,14 @@ public class Player : MonoBehaviour
         if (!blocking) {
             this.health -= damage;
             HealthChangeEvent(health);
+            pAnimator.SetBool("Walking", false);
             if (health <= 0) {
                 Debug.Log("I died ;-;");
-                Destroy(this.gameObject);
+                pAnimator.SetTrigger("TrDeath");
+                dead = true;
+                //Destroy(this.gameObject);
+            } else {
+                pAnimator.SetTrigger("TrHurt");
             }
             InterruptMovement();
             rb.velocity = Vector2.zero;
@@ -406,15 +455,24 @@ public class Player : MonoBehaviour
         {
             return;
         }
+        pAnimator.SetBool("Walking", false);
+        /*
+        if (blockingTimer >= 1.0f) {
+            pAnimator.speed = 0;
+        }
+        */
         if (context.started)
         {
+            pAnimator.SetTrigger("TrBlock");
             blocking = true;
             Debug.Log("blocking true");
             InterruptMovement();
-        } else if (!context.canceled) {
+        } else if (context.canceled) {
             blocking = false;
+            pAnimator.speed = 1;
             Debug.Log("blocking false");
         }
+        //Debug.Log("context.duration: " + context.duration);
     }
     public void Stun(float stunDuration)
     {
@@ -431,8 +489,11 @@ public class Player : MonoBehaviour
             InterruptMovement();
             busyTimer = dashTime;
             Debug.Log("Dash initiated");
+            pAnimator.SetTrigger("TrDash");
+            //pAnimator.Play("TrDash");
             if (movedRightLast) rb.AddForce(new Vector2(xDirectionDash, yDirectionDash));
             else rb.AddForce(new Vector2(xDirectionDash * -1, yDirectionDash));
+            //pAnimator.ResetTrigger("TrDash");
         }
     }
 
@@ -456,7 +517,8 @@ public class Player : MonoBehaviour
         fishUses = f.GetMaxUses();
         fishExpiration = f.GetMaxTime();
         f.SetPlayer(this);
-        GetComponent<SpriteRenderer>().color = new Color(0, 1, 1);
+        GetComponent<SpriteRenderer>().color = new Color(0, 1, .255f);
+        //GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
         return true;
     }
 }

@@ -28,7 +28,12 @@ public class AttackArea : MonoBehaviour
         Player p = collider.GetComponent<Player>();
         if (p != null && p != thisPlayer) {
             Debug.Log("Have detected a player");
-            if (!facingRight) xDirectionKnockback *= -1;
+            if (!facingRight) {
+                xDirectionKnockback *= -1;
+                p.GetComponent<SpriteRenderer>().flipX = true;
+            } else {
+                p.GetComponent<SpriteRenderer>().flipX = false;
+            }
             Debug.Log("knockback (x direction): " + xDirectionKnockback);
             Debug.Log("knockback (y direction): " + yDirectionKnockback);
             p.Hurt(damage, new Vector2(xDirectionKnockback, yDirectionKnockback));
