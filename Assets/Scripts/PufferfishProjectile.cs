@@ -82,9 +82,9 @@ public class PufferfishProjectile : FishProjectile
 
     private IEnumerator TriggerSlam()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
         state = State.Slamming;
-        rb.AddForce(new Vector2(0, -1000), ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(0, -30), ForceMode2D.Impulse);
         Destroy(gameObject, 5);
     }
 }

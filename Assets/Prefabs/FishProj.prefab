@@ -172,6 +172,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  stunDuration: 1
-  xDirectionKnockback: 500
+  stunDuration: 0.1
+  xDirectionKnockback: 4
   yDirectionKnockback: 1

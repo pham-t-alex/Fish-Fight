@@ -16,11 +16,11 @@ public class Pufferfish : Fish
         fishProj.GetComponent<PufferfishProjectile>().Initialize(player);
         if (player.MovedRightLast)
         {
-            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(1000, -1000), ForceMode2D.Impulse);
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(18, -15), ForceMode2D.Impulse);
         }
         else
         {
-            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1000, -1000), ForceMode2D.Impulse);
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-18, -15), ForceMode2D.Impulse);
         }
 
         /*GameObject attackRange = GameObject.Instantiate(FishItemSpawnManager.Instance.FishPrefab(0));

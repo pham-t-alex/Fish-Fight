@@ -144,6 +144,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 5
-  stunDuration: 4
-  xDirectionKnockback: 1000
-  yDirectionKnockback: 1
+  stunDuration: 1
+  xDirectionKnockback: 5
+  yDirectionKnockback: 4

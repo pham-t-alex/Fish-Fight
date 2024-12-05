@@ -31,6 +31,6 @@ public class BasicFish : Fish
             attackRange.transform.position = new Vector2((player.transform.position.x - 1.5f), player.transform.position.y);
             Debug.Log("Instantiated attack to the left!");
         }
-        GameObject.Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
+        GameObject.Destroy(attackRange, 0.1f /* This number is how long the attack will last*/);
     }
 }

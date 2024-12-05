@@ -177,8 +177,8 @@ MonoBehaviour:
   jumpCount: 0
   maxJumps: 2
   health: 100
-  xDirectionDash: 1000
-  yDirectionDash: 10
+  xDirectionDash: 15
+  yDirectionDash: 3
   attackCooldown: 0.25
   useBlockTimeLimit: 3
   attackDelay: 0.2

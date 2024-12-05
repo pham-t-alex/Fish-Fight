@@ -98,10 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6094b1467c66147219a755c293ef46b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 8
   stunDuration: 0.4
-  xDirectionKnockback: 400
-  yDirectionKnockback: 2
+  xDirectionKnockback: 5
+  yDirectionKnockback: 4
 --- !u!61 &6303937628040551585
 BoxCollider2D:
   m_ObjectHideFlags: 0

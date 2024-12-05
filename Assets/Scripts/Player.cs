@@ -158,8 +158,6 @@ public class Player : MonoBehaviour
             blocking = false;
             Debug.Log("blocking changed to false");
         }
-
-        Debug.Log(moveDirection.x);
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -268,6 +266,10 @@ public class Player : MonoBehaviour
 
     public void TriggerAction()
     {
+        if (Busy || Stunned || blocking)
+        {
+            return;
+        }
         switch (action)
         {
             case Action.Attack:
@@ -292,7 +294,7 @@ public class Player : MonoBehaviour
                     attackRange.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
                     Debug.Log("Instantiated attack to the left!");
                 }
-                Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
+                Destroy(attackRange, 0.1f /* This number is how long the attack will last*/);
                 break;
 
             case Action.Use:
@@ -405,7 +407,7 @@ public class Player : MonoBehaviour
             }
             InterruptMovement();
             rb.velocity = Vector2.zero;
-            rb.AddForce(knockback);
+            rb.AddForce(knockback, ForceMode2D.Impulse);
             //moveDirection.x = knockback;
         } else {
             rb.AddForce(new Vector2(knockback.x / 2.0f, knockback.y / 2.0f), ForceMode2D.Impulse); // if blocking is true, there is still knockback, but less than the knockback vector
@@ -421,7 +423,7 @@ public class Player : MonoBehaviour
             blocking = true;
             Debug.Log("blocking true");
             InterruptMovement();
-        } else if (!context.canceled) {
+        } else if (context.canceled) {
             blocking = false;
             Debug.Log("blocking false");
         }
@@ -430,7 +432,7 @@ public class Player : MonoBehaviour
     {
         if (blocking) stunDuration /= 2;
         //Debug.Log("Stun duration: " + stunDuration);
-        stunnedTimer = stunDuration;
+        stunnedTimer = Mathf.Max(stunnedTimer, stunDuration);
     }
     public void Dash(InputAction.CallbackContext context) {
         if (WaitingToAct || Busy || Stunned || blocking)
