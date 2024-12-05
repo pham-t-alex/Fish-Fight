@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FishProjectile : MonoBehaviour
 {
-    private Player attacker;
+    protected Player attacker;
     [SerializeField] private int damage = 1;
     [SerializeField] private float stunDuration = 1.0f;
     [SerializeField] private float xDirectionKnockback = 500.0f;
@@ -19,19 +19,18 @@ public class FishProjectile : MonoBehaviour
     public void Initialize(Player p)
     {
         attacker = p;
-        GetComponent<BoxCollider2D>().enabled = true;
+        GetComponent<Collider2D>().enabled = true;
     }
 
-    public void Initialize(Player p, int dmg, float stun, float xKB, float yKB)
+    public void UpdateStats(int dmg, float stun, float x, float y)
     {
-        Initialize(p);
         damage = dmg;
         stunDuration = stun;
-        xDirectionKnockback = xKB;
-        yDirectionKnockback = yKB;
+        xDirectionKnockback = x;
+        yDirectionKnockback = y;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         string tag = collision.gameObject.tag;
         Player p = collision.GetComponent<Player>();

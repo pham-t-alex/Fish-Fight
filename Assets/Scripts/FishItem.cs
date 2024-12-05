@@ -13,8 +13,22 @@ public class FishItem : MonoBehaviour
     void Start()
     {
         countdown = lifespan;
-        // temporary
-        fish = new BasicFish();
+        RandomFish();
+    }
+
+    public void RandomFish()
+    {
+        int value = Random.Range(0, 2);
+        switch (value)
+        {
+            case 0:
+                fish = new BasicFish();
+                break;
+            case 1:
+                fish = new Pufferfish();
+                GetComponent<SpriteRenderer>().color = new Color(1, 0.95f, 0.73f);
+                break;
+        }
     }
 
     // Update is called once per frame

@@ -12,15 +12,15 @@ public class Pufferfish : Fish
     public override void Use()
     {
         GameObject fishProj = GameObject.Instantiate(PrefabManager.Instance.PufferProjPrefab,
-            player.transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+            player.transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
         fishProj.GetComponent<PufferfishProjectile>().Initialize(player);
         if (player.MovedRightLast)
         {
-            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(2000, 200));
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(1000, -1000));
         }
         else
         {
-            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-2000, 200));
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1000, -1000));
         }
 
         /*GameObject attackRange = GameObject.Instantiate(FishItemSpawnManager.Instance.FishPrefab(0));
