@@ -12,6 +12,14 @@ public class PrefabManager : MonoBehaviour
             return fishProjPrefab;
         }
     }
+    [SerializeField] private GameObject pufferProjPrefab;
+    public GameObject PufferProjPrefab
+    {
+        get
+        {
+            return pufferProjPrefab;
+        }
+    }
 
     private static PrefabManager instance;
     public static PrefabManager Instance

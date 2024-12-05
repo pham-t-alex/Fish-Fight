@@ -22,6 +22,15 @@ public class FishProjectile : MonoBehaviour
         GetComponent<BoxCollider2D>().enabled = true;
     }
 
+    public void Initialize(Player p, int dmg, float stun, float xKB, float yKB)
+    {
+        Initialize(p);
+        damage = dmg;
+        stunDuration = stun;
+        xDirectionKnockback = xKB;
+        yDirectionKnockback = yKB;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         string tag = collision.gameObject.tag;
