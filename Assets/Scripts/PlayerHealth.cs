@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
-[RequireComponent(typeof(TMP_Text))]
+[RequireComponent(typeof(Slider))]
 public class PlayerHealth : MonoBehaviour
 {
-    private TMP_Text text;
+    private Slider slider;
     // Start is called before the first frame update
     void Start()
     {
-        text = GetComponent<TMP_Text>();
+        slider = GetComponent<Slider>();
     }
 
     // Update is called once per frame
@@ -27,6 +27,6 @@ public class PlayerHealth : MonoBehaviour
 
     public void UpdateHealth(int health)
     {
-        text.text = health + "";
+        slider.value = health;
     }
 }
