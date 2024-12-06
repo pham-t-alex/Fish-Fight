@@ -5,13 +5,11 @@ using UnityEngine;
 public abstract class Fish
 {
     private int maxUses;
-    private float maxTime;
     protected Player player;
 
-    protected void SetUsesAndTime(int uses, float time)
+    protected void SetUses(int uses)
     {
         maxUses = uses;
-        maxTime = time;
     }
 
     public abstract void Use();
@@ -34,11 +32,6 @@ public abstract class Fish
     public int GetMaxUses()
     {
         return maxUses;
-    }
-
-    public float GetMaxTime()
-    {
-        return maxTime;
     }
 
     public void SetPlayer(Player p)

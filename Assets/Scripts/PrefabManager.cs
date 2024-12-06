@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class PrefabManager : MonoBehaviour
 {
+    [SerializeField] private GameObject basicFishAttackPrefab;
+    public GameObject BasicFishAttackPrefab
+    {
+        get
+        {
+            return basicFishAttackPrefab;
+        }
+    }
     [SerializeField] private GameObject fishProjPrefab;
     public GameObject FishProjPrefab
     {
@@ -18,6 +26,22 @@ public class PrefabManager : MonoBehaviour
         get
         {
             return pufferProjPrefab;
+        }
+    }
+    [SerializeField] private GameObject sharkPrefab;
+    public GameObject SharkPrefab
+    {
+        get
+        {
+            return sharkPrefab;
+        }
+    }
+    [SerializeField] private GameObject swordfishPrefab;
+    public GameObject SwordfishPrefab
+    {
+        get
+        {
+            return swordfishPrefab;
         }
     }
 

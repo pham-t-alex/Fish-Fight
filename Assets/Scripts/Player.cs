@@ -6,6 +6,14 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    private static List<Player> players = new List<Player>();
+    public static List<Player> AllPlayers
+    {
+        get
+        {
+            return players;
+        }
+    }
     private Vector2 moveDirection = Vector2.zero;
     [SerializeField] private float speed = 0;
     [SerializeField] private float jump = 0;
@@ -78,7 +86,6 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject counterObject;
     [SerializeField] private Fish fish;
     [SerializeField] private int fishUses;
-    [SerializeField] private float fishExpiration;
     private bool movedRightLast = true; // by default, the player is facign towards the center, which would be right
     public bool MovedRightLast
     {
@@ -105,6 +112,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        players.Add(this);
         rb = GetComponent<Rigidbody2D>();
         BattleUI.Instance.AddPlayer(this);
     }
@@ -130,16 +138,6 @@ public class Player : MonoBehaviour
                     rb.velocity = new Vector2(0, rb.velocity.y);
                 }
                 busyTimer = 0;
-            }
-        }
-
-        if (fishExpiration > 0)
-        {
-            fishExpiration -= Time.deltaTime;
-            if (fishExpiration <= 0 && !WaitingToAct)
-            {
-                fish = null;
-                GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
             }
         }
 
@@ -300,7 +298,7 @@ public class Player : MonoBehaviour
             case Action.Use:
                 fish.Use();
                 fishUses--;
-                if (fishUses <= 0 || fishExpiration <= 0)
+                if (fishUses <= 0)
                 {
                     fishUses = 0;
                     fish = null;
@@ -448,7 +446,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    private IEnumerator DisableCollision(Collider2D collider, float time)
+    public void InvokeDash(float time, float xDash, float yDash)
+    {
+        InterruptMovement();
+        busyTimer = time;
+        Debug.Log("Dash initiated");
+        if (movedRightLast) rb.AddForce(new Vector2(xDash, yDash), ForceMode2D.Impulse);
+        else rb.AddForce(new Vector2(xDash * -1, yDash), ForceMode2D.Impulse);
+    }
+
+    public IEnumerator DisableCollision(Collider2D collider, float time)
     {
         disabledColliders.Add(collider);
         Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collider);
@@ -466,7 +473,6 @@ public class Player : MonoBehaviour
         }
         fish = f;
         fishUses = f.GetMaxUses();
-        fishExpiration = f.GetMaxTime();
         f.SetPlayer(this);
         GetComponent<SpriteRenderer>().color = new Color(0, 1, 1);
         return true;

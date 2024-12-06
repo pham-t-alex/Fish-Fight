@@ -6,12 +6,12 @@ public class BasicFish : Fish
 {
     public BasicFish()
     {
-        SetUsesAndTime(3, 5);
+        SetUses(3);
     }
 
     public override void Use()
     {
-        GameObject attackRange = GameObject.Instantiate(FishItemSpawnManager.Instance.FishPrefab(0));
+        GameObject attackRange = GameObject.Instantiate(PrefabManager.Instance.BasicFishAttackPrefab);
 
         if (attackRange.TryGetComponent(out AttackArea attackArea))
         {

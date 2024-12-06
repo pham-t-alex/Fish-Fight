@@ -18,7 +18,7 @@ public class FishItem : MonoBehaviour
 
     public void RandomFish()
     {
-        int value = Random.Range(0, 2);
+        int value = Random.Range(0, 4);
         switch (value)
         {
             case 0:
@@ -26,7 +26,15 @@ public class FishItem : MonoBehaviour
                 break;
             case 1:
                 fish = new Pufferfish();
-                GetComponent<SpriteRenderer>().color = new Color(1, 0.95f, 0.73f);
+                GetComponent<SpriteRenderer>().color = new Color(243f/255, 242f/255, 170f/255);
+                break;
+            case 2:
+                fish = new Shark();
+                GetComponent<SpriteRenderer>().color = new Color(100f / 255, 123f / 255, 127f / 255);
+                break;
+            case 3:
+                fish = new Swordfish();
+                GetComponent<SpriteRenderer>().color = new Color(64f / 255, 104f / 255, 177f / 255);
                 break;
         }
     }

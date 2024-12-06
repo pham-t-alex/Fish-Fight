@@ -309,8 +309,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 389debba9bdbf4c05a1110ec0a37241e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  basicFishAttackPrefab: {fileID: 940650987817617508, guid: 80574e9879b728141862f4005c9aa340, type: 3}
   fishProjPrefab: {fileID: 455565146700008606, guid: 6c0b45169f7514444bd3db5fcbaa387d, type: 3}
   pufferProjPrefab: {fileID: 455565146700008606, guid: a4b7262268b924f4191b41b3696ce00e, type: 3}
+  sharkPrefab: {fileID: 4045587064289393659, guid: 71033dabf1095664ebb699ad9bdbbfb0, type: 3}
+  swordfishPrefab: {fileID: 940650987817617508, guid: 5d05b7d31d300c74db31411fce448814, type: 3}
 --- !u!1001 &291528287
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1426,8 +1429,6 @@ MonoBehaviour:
   currentDelay: 0
   fishItem: {fileID: 455565146700008606, guid: d3847d60769f042b48aebaa2879481bb, type: 3}
   fishCount: 10
-  fishPrefabs:
-  - {fileID: 940650987817617508, guid: 80574e9879b728141862f4005c9aa340, type: 3}
 --- !u!1 &1814832532
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ public class Pufferfish : Fish
 {
     public Pufferfish()
     {
-        SetUsesAndTime(1, 5);
+        SetUses(1);
     }
 
     public override void Use()
