@@ -58,6 +58,8 @@ public class FishItem : MonoBehaviour
         }
         if (player.PickupFish(fish))
         {
+            Color c = GetComponent<SpriteRenderer>().color;
+            player.GetComponent<SpriteRenderer>().color = new Color((0.5f + c.r) / 1.5f, (0.5f + c.g) / 1.5f, (0.5f + c.b) / 1.5f);
             Destroy(this.gameObject);
         }
     }

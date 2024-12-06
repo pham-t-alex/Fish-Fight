@@ -530,7 +530,6 @@ public class Player : MonoBehaviour
         fish = f;
         fishUses = f.GetMaxUses();
         f.SetPlayer(this);
-        GetComponent<SpriteRenderer>().color = new Color(0, 1, .255f);
         //GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
         return true;
     }

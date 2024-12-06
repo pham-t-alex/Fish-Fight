@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6283448906585694346}
   - component: {fileID: 4201527087307601395}
   - component: {fileID: 6666308252848752675}
+  - component: {fileID: 3629940117161432551}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -173,7 +174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 6
-  jump: 8
+  jump: 10
   jumpCount: 0
   maxJumps: 2
   health: 100
@@ -370,7 +371,7 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!95 &-7867078106788580560
+--- !u!95 &3629940117161432551
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0

@@ -7,7 +7,6 @@ public class RadialAttackArea : MonoBehaviour
     [SerializeField] private int damage = 5;
     [SerializeField] private float stunDuration = 0.4f;
     //[SerializeField] private float knockback = 1.0f;
-    private bool facingRight = true;
     [SerializeField] private float knockback = 5;
     private Player thisPlayer;
     // Start is called before the first frame update
