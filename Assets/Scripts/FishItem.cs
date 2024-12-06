@@ -13,8 +13,30 @@ public class FishItem : MonoBehaviour
     void Start()
     {
         countdown = lifespan;
-        // temporary
-        fish = new BasicFish();
+        RandomFish();
+    }
+
+    public void RandomFish()
+    {
+        int value = Random.Range(0, 4);
+        switch (value)
+        {
+            case 0:
+                fish = new BasicFish();
+                break;
+            case 1:
+                fish = new Pufferfish();
+                GetComponent<SpriteRenderer>().color = new Color(243f/255, 242f/255, 170f/255);
+                break;
+            case 2:
+                fish = new Shark();
+                GetComponent<SpriteRenderer>().color = new Color(100f / 255, 123f / 255, 127f / 255);
+                break;
+            case 3:
+                fish = new Swordfish();
+                GetComponent<SpriteRenderer>().color = new Color(64f / 255, 104f / 255, 177f / 255);
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -36,6 +58,8 @@ public class FishItem : MonoBehaviour
         }
         if (player.PickupFish(fish))
         {
+            Color c = GetComponent<SpriteRenderer>().color;
+            player.GetComponent<SpriteRenderer>().color = new Color((0.5f + c.r) / 1.5f, (0.5f + c.g) / 1.5f, (0.5f + c.b) / 1.5f);
             Destroy(this.gameObject);
         }
     }

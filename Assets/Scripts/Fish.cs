@@ -5,13 +5,11 @@ using UnityEngine;
 public abstract class Fish
 {
     private int maxUses;
-    private float maxTime;
     protected Player player;
 
-    protected void SetUsesAndTime(int uses, float time)
+    protected void SetUses(int uses)
     {
         maxUses = uses;
-        maxTime = time;
     }
 
     public abstract void Use();
@@ -23,22 +21,17 @@ public abstract class Fish
         fishProj.GetComponent<FishProjectile>().Initialize(player);
         if (player.MovedRightLast)
         {
-            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(2000, 200));
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(25, 2), ForceMode2D.Impulse);
         }
         else
         {
-            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-2000, 200));
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-25, 2), ForceMode2D.Impulse);
         }
     }
 
     public int GetMaxUses()
     {
         return maxUses;
-    }
-
-    public float GetMaxTime()
-    {
-        return maxTime;
     }
 
     public void SetPlayer(Player p)

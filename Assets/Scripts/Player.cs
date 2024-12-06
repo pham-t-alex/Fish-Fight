@@ -6,7 +6,14 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-
+    private static List<Player> players = new List<Player>();
+    public static List<Player> AllPlayers
+    {
+        get
+        {
+            return players;
+        }
+    }
     private Vector2 moveDirection = Vector2.zero;
     private Animator pAnimator;
     private float deathTimer = 0.0f;
@@ -82,7 +89,6 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject counterObject;
     [SerializeField] private Fish fish;
     [SerializeField] private int fishUses;
-    [SerializeField] private float fishExpiration;
     private bool movedRightLast = true; // by default, the player is facign towards the center, which would be right
     public bool MovedRightLast
     {
@@ -109,6 +115,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        players.Add(this);
         rb = GetComponent<Rigidbody2D>();
         BattleUI.Instance.AddPlayer(this);
         pAnimator = GetComponent<Animator>();
@@ -147,17 +154,6 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (fishExpiration > 0)
-        {
-            fishExpiration -= Time.deltaTime;
-            if (fishExpiration <= 0 && !WaitingToAct)
-            {
-                fish = null;
-                //GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
-                GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
-            }
-        }
-
         if (actionDelayTimer > 0)
         {
             actionDelayTimer -= Time.deltaTime;
@@ -185,34 +181,36 @@ public class Player : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        if (context.canceled && moving)
+        if (context.canceled)
         {
-            moving = false;
-            pAnimator.SetBool("Walking", false);
-            //pAnimator.Stop("Walking");
-            //Debug.Log("Walking now false");
-            InterruptMovement();
-            return;
-        }
-        if (WaitingToAct || Busy || Stunned || blocking)
-        {
+            if (moving)
+            {
+                moving = false;
+                InterruptMovement();
+            }
             return;
         }
         moving = true;
         Vector2 direction = context.ReadValue<Vector2>();
         moveDirection.x = direction.x;
-        if (moveDirection.x < 0) {
+        if (moveDirection.x < 0)
+        {
             //movedLeftLast = true;
             movedRightLast = false;
             GetComponent<SpriteRenderer>().flipX = false;
             Debug.Log("Last moved left");
-        } else if (moveDirection.x > 0) {
+        }
+        else if (moveDirection.x > 0)
+        {
             //movedLeftLast = false;
             movedRightLast = true;
             GetComponent<SpriteRenderer>().flipX = true;
             Debug.Log("Last moved right");
         }
-        pAnimator.SetBool("Walking", true);
+        if (WaitingToAct || Busy || Stunned || blocking)
+        {
+            return;
+        }
         // be able to move through platform
         if (direction.y < 0 && Mathf.Abs(direction.y) >= Mathf.Abs(direction.x))
         {
@@ -229,6 +227,7 @@ public class Player : MonoBehaviour
 
     public void InterruptMovement()
     {
+        pAnimator.SetBool("Walking", false);
         rb.velocity = new Vector2(0, rb.velocity.y);
         return;
     }
@@ -242,7 +241,8 @@ public class Player : MonoBehaviour
         if (context.started && jumpCount > 0)
         {
             jumpCount--;
-            rb.velocity = new Vector2(rb.velocity.x, jump);
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+            rb.AddForce(new Vector2(0, jump), ForceMode2D.Impulse);
             pAnimator.SetTrigger("TrJump");
             Debug.Log("Jumped!");
         }
@@ -250,6 +250,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate() {
         if (moving && !(WaitingToAct || Busy || Stunned || blocking)) {
+            pAnimator.SetBool("Walking", true);
             if (blocking) {
                 rb.velocity = new Vector2(moveDirection.x * speed / 2, rb.velocity.y);
                 //Debug.Log("speed: " + (speed / 2));
@@ -288,6 +289,10 @@ public class Player : MonoBehaviour
 
     public void TriggerAction()
     {
+        if (Busy || Stunned || blocking)
+        {
+            return;
+        }
         switch (action)
         {
             case Action.Attack:
@@ -312,14 +317,14 @@ public class Player : MonoBehaviour
                     attackRange.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
                     Debug.Log("Instantiated attack to the left!");
                 }
-                Destroy(attackRange, 0.5f /* This number is how long the attack will last*/);
+                Destroy(attackRange, 0.1f /* This number is how long the attack will last*/);
                 break;
 
             case Action.Use:
                 pAnimator.SetBool("Walking", false);
                 fish.Use();
                 fishUses--;
-                if (fishUses <= 0 || fishExpiration <= 0)
+                if (fishUses <= 0)
                 {
                     fishUses = 0;
                     fish = null;
@@ -444,10 +449,10 @@ public class Player : MonoBehaviour
             }
             InterruptMovement();
             rb.velocity = Vector2.zero;
-            rb.AddForce(knockback);
+            rb.AddForce(knockback, ForceMode2D.Impulse);
             //moveDirection.x = knockback;
         } else {
-            rb.AddForce(new Vector2(knockback.x / 2.0f, knockback.y / 2.0f)); // if blocking is true, there is still knockback, but less than the knockback vector
+            rb.AddForce(new Vector2(knockback.x / 2.0f, knockback.y / 2.0f), ForceMode2D.Impulse); // if blocking is true, there is still knockback, but less than the knockback vector
         }
     }
     public void Block(InputAction.CallbackContext context) {
@@ -478,7 +483,7 @@ public class Player : MonoBehaviour
     {
         if (blocking) stunDuration /= 2;
         //Debug.Log("Stun duration: " + stunDuration);
-        stunnedTimer = stunDuration;
+        stunnedTimer = Mathf.Max(stunnedTimer, stunDuration);
     }
     public void Dash(InputAction.CallbackContext context) {
         if (WaitingToAct || Busy || Stunned || blocking)
@@ -491,13 +496,22 @@ public class Player : MonoBehaviour
             Debug.Log("Dash initiated");
             pAnimator.SetTrigger("TrDash");
             //pAnimator.Play("TrDash");
-            if (movedRightLast) rb.AddForce(new Vector2(xDirectionDash, yDirectionDash));
-            else rb.AddForce(new Vector2(xDirectionDash * -1, yDirectionDash));
+            if (movedRightLast) rb.AddForce(new Vector2(xDirectionDash, yDirectionDash), ForceMode2D.Impulse);
+            else rb.AddForce(new Vector2(xDirectionDash * -1, yDirectionDash), ForceMode2D.Impulse);
             //pAnimator.ResetTrigger("TrDash");
         }
     }
 
-    private IEnumerator DisableCollision(Collider2D collider, float time)
+    public void InvokeDash(float time, float xDash, float yDash)
+    {
+        InterruptMovement();
+        busyTimer = time;
+        Debug.Log("Dash initiated");
+        if (movedRightLast) rb.AddForce(new Vector2(xDash, yDash), ForceMode2D.Impulse);
+        else rb.AddForce(new Vector2(xDash * -1, yDash), ForceMode2D.Impulse);
+    }
+
+    public IEnumerator DisableCollision(Collider2D collider, float time)
     {
         disabledColliders.Add(collider);
         Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collider);
@@ -515,9 +529,7 @@ public class Player : MonoBehaviour
         }
         fish = f;
         fishUses = f.GetMaxUses();
-        fishExpiration = f.GetMaxTime();
         f.SetPlayer(this);
-        GetComponent<SpriteRenderer>().color = new Color(0, 1, .255f);
         //GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
         return true;
     }

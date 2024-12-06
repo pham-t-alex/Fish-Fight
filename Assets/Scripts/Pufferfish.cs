@@ -2,16 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicFish : Fish
+public class Pufferfish : Fish
 {
-    public BasicFish()
+    public Pufferfish()
     {
-        SetUses(3);
+        SetUses(1);
     }
 
     public override void Use()
     {
-        GameObject attackRange = GameObject.Instantiate(PrefabManager.Instance.BasicFishAttackPrefab);
+        GameObject fishProj = GameObject.Instantiate(PrefabManager.Instance.PufferProjPrefab,
+            player.transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
+        fishProj.GetComponent<PufferfishProjectile>().Initialize(player);
+        if (player.MovedRightLast)
+        {
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(18, -15), ForceMode2D.Impulse);
+        }
+        else
+        {
+            fishProj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-18, -15), ForceMode2D.Impulse);
+        }
+
+        /*GameObject attackRange = GameObject.Instantiate(FishItemSpawnManager.Instance.FishPrefab(0));
 
         if (attackRange.TryGetComponent(out AttackArea attackArea))
         {
@@ -31,6 +43,6 @@ public class BasicFish : Fish
             attackRange.transform.position = new Vector2((player.transform.position.x - 1.5f), player.transform.position.y);
             Debug.Log("Instantiated attack to the left!");
         }
-        GameObject.Destroy(attackRange, 0.1f /* This number is how long the attack will last*/);
+        GameObject.Destroy(attackRange, 0.5f);*/
     }
 }

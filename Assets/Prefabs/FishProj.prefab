@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b247bc94882411d945495ea7528a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
-  stunDuration: 1
-  xDirectionKnockback: 500
+  damage: 1
+  stunDuration: 0.1
+  xDirectionKnockback: 4
   yDirectionKnockback: 1
