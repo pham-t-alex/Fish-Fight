@@ -1,0 +1,466 @@
+fileFormatVersion: 2
+guid: 06b3995c8ec114c4c9ccbda93013cfdd
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_0
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 31
+        width: 52
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e99528ad1305493d8668fe5c5aca82c
+      internalID: -541178993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_1
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 33
+        width: 56
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5d2a50e95a54344239bca53b79c90dab
+      internalID: 1332512668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_2
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 34
+        width: 52
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1aac3970e057a4523b35bab44461ce25
+      internalID: 1092449952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_3
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 30
+        width: 60
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 989a1fb55fdee407d9054fa948887be2
+      internalID: -711899523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_4
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 30
+        width: 72
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -17, y: 63.5}
+        - {x: -36, y: 39.5}
+        - {x: -36, y: -17.5}
+        - {x: -26, y: -63.5}
+        - {x: 11, y: -63.5}
+        - {x: 36, y: -50.5}
+        - {x: 36, y: 8.5}
+        - {x: 30, y: 12.5}
+        - {x: 24, y: 63.5}
+      - - {x: -36, y: -16.5}
+        - {x: -33, y: -15.5}
+        - {x: -33, y: -12.5}
+        - {x: -35, y: -10.5}
+        - {x: -36, y: -10.5}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c78ac93c0821d4b258445dcdc778c282
+      internalID: -521349639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_5
+      rect:
+        serializedVersion: 2
+        x: 328
+        y: 30
+        width: 79
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 28.5, y: -24.5}
+        - {x: 39.5, y: -12.5}
+        - {x: 39.5, y: -1.5}
+        - {x: 32.5, y: 6.5}
+        - {x: 29.5, y: 25.5}
+        - {x: 13.5, y: 53.5}
+        - {x: 6.5, y: 63.5}
+        - {x: -10.5, y: 63.5}
+        - {x: -21.5, y: 60.5}
+        - {x: -39.5, y: 34.5}
+        - {x: -39.5, y: 17.5}
+        - {x: -33.5, y: -10.5}
+        - {x: -22.5, y: -63.5}
+        - {x: 1.5, y: -63.5}
+        - {x: 3.5, y: -60.5}
+        - {x: 2.5, y: -56.5}
+        - {x: 0.5, y: -52.5}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1486791fc78a3424691338f851ed3046
+      internalID: -890427014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_6
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 32
+        width: 94
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 47, y: 26}
+        - {x: -5, y: 62}
+        - {x: -29, y: 62}
+        - {x: -47, y: 42}
+        - {x: -47, y: 16}
+        - {x: -38, y: -11}
+        - {x: -42, y: -44}
+        - {x: -43, y: -62}
+        - {x: -19, y: -62}
+        - {x: -17, y: -61}
+        - {x: -20, y: -55}
+        - {x: 47, y: -18}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 71951a3c892c047d1b65929fd47e04e8
+      internalID: -1640801501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_7
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 30
+        width: 110
+        height: 125
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -34, y: 62.5}
+        - {x: -55, y: 30.5}
+        - {x: -55, y: -62.5}
+        - {x: 6, y: -62.5}
+        - {x: 55, y: -11.5}
+        - {x: 52, y: 4.5}
+        - {x: 37, y: 16.5}
+        - {x: -8, y: 62.5}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4665b942a7315469ca985a1d1d5604f5
+      internalID: -698253533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_8
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 31
+        width: 112
+        height: 125
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -56, y: 62.5}
+        - {x: -56, y: 15.5}
+        - {x: -48, y: -2.5}
+        - {x: -56, y: -62.5}
+        - {x: 17, y: -62.5}
+        - {x: 56, y: -39.5}
+        - {x: 56, y: 4.5}
+        - {x: 44, y: 17.5}
+        - {x: 56, y: 57.5}
+        - {x: 37, y: 62.5}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49860c439fe61484eab8e34e1c3707cb
+      internalID: -43807670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_9
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 32
+        width: 75
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -5.5, y: -26}
+        - {x: 15.5, y: -37}
+        - {x: 37.5, y: -40}
+        - {x: 37.5, y: -5}
+        - {x: 28.5, y: 18}
+        - {x: 6.5, y: 63}
+        - {x: -22.5, y: 63}
+        - {x: -37.5, y: 53}
+        - {x: -37.5, y: 14}
+        - {x: -27.5, y: 2}
+        - {x: -37.5, y: -59}
+        - {x: -28.5, y: -63}
+        - {x: -8.5, y: -63}
+        - {x: -6.5, y: -61}
+        - {x: -6.5, y: -60}
+        - {x: -9.5, y: -57}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b6df6ab82a204972a65c9fa3109e2f9
+      internalID: -383955620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_10
+      rect:
+        serializedVersion: 2
+        x: 779
+        y: 31
+        width: 69
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 12.5, y: 56.5}
+        - {x: 5.5, y: 63.5}
+        - {x: -10.5, y: 63.5}
+        - {x: -22.5, y: 59.5}
+        - {x: -34.5, y: 36.5}
+        - {x: -34.5, y: -14.5}
+        - {x: -25.5, y: -59.5}
+        - {x: -20.5, y: -63.5}
+        - {x: 2.5, y: -63.5}
+        - {x: 34.5, y: -49.5}
+        - {x: 34.5, y: 11.5}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f95fc9d2bf5e42e5aff20a80b54901d
+      internalID: -635937148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Animation Sub Kick Sprite_11
+      rect:
+        serializedVersion: 2
+        x: 860
+        y: 34
+        width: 52
+        height: 126
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ff1e8095019b4d6099a43ffa8fe0714
+      internalID: -672226563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Animation Sub Kick Sprite_0: -541178993
+      Animation Sub Kick Sprite_1: 1332512668
+      Animation Sub Kick Sprite_10: -635937148
+      Animation Sub Kick Sprite_11: -672226563
+      Animation Sub Kick Sprite_2: 1092449952
+      Animation Sub Kick Sprite_3: -711899523
+      Animation Sub Kick Sprite_4: -521349639
+      Animation Sub Kick Sprite_5: -890427014
+      Animation Sub Kick Sprite_6: -1640801501
+      Animation Sub Kick Sprite_7: -698253533
+      Animation Sub Kick Sprite_8: -43807670
+      Animation Sub Kick Sprite_9: -383955620
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
