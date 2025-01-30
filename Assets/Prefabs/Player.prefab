@@ -180,6 +180,7 @@ MonoBehaviour:
   health: 100
   xDirectionDash: 25
   yDirectionDash: 3
+  player2Controller: {fileID: 9100000, guid: bf041e84a7a124323964b61c4388e1e3, type: 2}
   attackCooldown: 0.25
   useBlockTimeLimit: 3
   attackDelay: 0.2

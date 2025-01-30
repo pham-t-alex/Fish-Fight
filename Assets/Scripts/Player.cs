@@ -23,6 +23,15 @@ public class Player : MonoBehaviour
     [SerializeField] private int health = 100;
     [SerializeField] private float xDirectionDash = 800.0f;
     [SerializeField] private float yDirectionDash = 10.0f;
+    public RuntimeAnimatorController player2Controller = null;
+    private bool player2 = false;
+    public bool isPlayer2
+    {
+        get
+        {
+            return player2;
+        }
+    }
     public int Health
     {
         get
@@ -115,9 +124,17 @@ public class Player : MonoBehaviour
     void Start()
     {
         players.Add(this);
+        if (players.Count > 2) {
+            Destroy(this.gameObject);
+            players.RemoveAt(players.Count - 1);
+        }
         rb = GetComponent<Rigidbody2D>();
         BattleUI.Instance.AddPlayer(this);
         pAnimator = GetComponent<Animator>();
+        if (players.IndexOf(this) != 0) {
+            pAnimator.runtimeAnimatorController = player2Controller as RuntimeAnimatorController;
+            player2 = true;
+        }
         GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
     }
 
@@ -164,9 +181,15 @@ public class Player : MonoBehaviour
         if (!blocking) blockingTimer = 0;
         else blockingTimer += Time.deltaTime;
 
-        
+        /*
         if (blockingTimer >= 1.2f && blocking) {
             pAnimator.speed = 0;
+        }
+        */
+
+        if (blocking) {
+            if ((!player2 && blockingTimer >= 1.2f) || (player2 && blockingTimer >= .417f)) pAnimator.speed = 0;
+            //if () pAnimator.speed = 0;
         }
         
 
@@ -196,14 +219,16 @@ public class Player : MonoBehaviour
         {
             //movedLeftLast = true;
             movedRightLast = false;
-            GetComponent<SpriteRenderer>().flipX = false;
+            if (player2) GetComponent<SpriteRenderer>().flipX = true;
+            else GetComponent<SpriteRenderer>().flipX = false;
             Debug.Log("Last moved left");
         }
         else if (moveDirection.x > 0)
         {
             //movedLeftLast = false;
             movedRightLast = true;
-            GetComponent<SpriteRenderer>().flipX = true;
+            if (!player2) GetComponent<SpriteRenderer>().flipX = true;
+            else GetComponent<SpriteRenderer>().flipX = false;
             Debug.Log("Last moved right");
         }
         if (WaitingToAct || Busy || Stunned || blocking)
@@ -316,11 +341,16 @@ public class Player : MonoBehaviour
                     attackRange.transform.position = new Vector2((this.transform.position.x - 1), this.transform.position.y);
                     Debug.Log("Instantiated attack to the left!");
                 }
+                // random value chooses random number from 0 to 1 inclusive
+                if (Random.value > 0.5f) pAnimator.SetTrigger("TrKick");
+                else pAnimator.SetTrigger("TrPunch");
                 Destroy(attackRange, 0.1f /* This number is how long the attack will last*/);
                 break;
 
             case Action.Use:
                 pAnimator.SetBool("Walking", false);
+                if (Random.value > 0.5f) pAnimator.SetTrigger("TrKick");
+                else pAnimator.SetTrigger("TrPunch");
                 fish.Use();
                 fishUses--;
                 if (fishUses <= 0)
@@ -338,6 +368,7 @@ public class Player : MonoBehaviour
                 fish = null;
                 //GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.255f);
                 GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
+                pAnimator.SetTrigger("TrThrow");
                 break;
         }
     }
@@ -363,9 +394,7 @@ public class Player : MonoBehaviour
                 actionDelayTimer = attackDelay;
             }
             
-            // random value chooses random number from 0 to 1 inclusive
-            if (Random.value > 0.5f) pAnimator.SetTrigger("TrKick");
-            else pAnimator.SetTrigger("TrPunch");
+            
             
         }
         Debug.Log("hm 2");
@@ -439,7 +468,9 @@ public class Player : MonoBehaviour
             HealthChangeEvent(health);
             pAnimator.SetBool("Walking", false);
             if (health <= 0) {
-                Debug.Log("I died ;-;");
+                //Debug.Log("I died ;-;");
+                if (player2) Debug.Log("Player 1 wins!");
+                else Debug.Log("Player 2 wins!");
                 pAnimator.SetTrigger("TrDeath");
                 dead = true;
                 //Destroy(this.gameObject);

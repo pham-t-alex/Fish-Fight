@@ -30,9 +30,11 @@ public class AttackArea : MonoBehaviour
             Debug.Log("Have detected a player");
             if (!facingRight) {
                 xDirectionKnockback *= -1;
-                p.GetComponent<SpriteRenderer>().flipX = true;
+                if (!p.isPlayer2) p.GetComponent<SpriteRenderer>().flipX = true;
+                else p.GetComponent<SpriteRenderer>().flipX = false;
             } else {
-                p.GetComponent<SpriteRenderer>().flipX = false;
+                if (!p.isPlayer2) p.GetComponent<SpriteRenderer>().flipX = false;
+                else p.GetComponent<SpriteRenderer>().flipX = true;
             }
             Debug.Log("knockback (x direction): " + xDirectionKnockback);
             Debug.Log("knockback (y direction): " + yDirectionKnockback);
